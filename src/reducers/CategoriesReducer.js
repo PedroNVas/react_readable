@@ -16,27 +16,27 @@ const categories = (state = initialCategoriesState, action) => {
     case CategoriesActions.ADD_ALL_CATEGORIES:
       return {
         ...state,
-        success: success,
-        loading: loading,
-        failed: failed
+        success,
+        loading,
+        failed
       }
 
     case CategoriesActions.ADD_ALL_CATEGORIES_SUCCESS:
       return {
         ...state,
-        categories: categories,
-        success: success,
-        loading: loading,
-        failed: failed
+        categories,
+        success,
+        loading,
+        failed
       }
 
     case CategoriesActions.ADD_ALL_CATEGORIES_FAILED:
       return {
         ...state,
-        success: success,
-        loading: loading,
-        failed: failed,
-        failReason: failReason
+        success,
+        loading,
+        failed,
+        failReason
       }
 
     default:
