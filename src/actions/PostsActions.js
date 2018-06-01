@@ -1,27 +1,39 @@
 import * as API from '../api/API'
 import * as ActionUtils from '../utils/ActionUtils'
 
+//region posts action creator helper
+
+const postsSuccessfulAction = (type, posts) => {
+  return {
+    type,
+    posts,
+    ...ActionUtils.successState()
+  }
+}
+
+const postSuccessfulAction = (type, post) => {
+  return {
+    type,
+    post,
+    ...ActionUtils.successState()
+  }
+}
+
+//endregion
+
 //region fetchPosts
 
-export const GET_ALL_POSTS_SUCCESS = 'GET_ALL_POSTS_SUCCESS'
-export const GET_ALL_POSTS_FAILED = 'GET_ALL_POSTS_FAILED'
-export const GET_ALL_POSTS = 'GET_ALL_POSTS'
+export const GET_POSTS_SUCCESS = 'GET_POSTS_SUCCESS'
+export const GET_POSTS_FAILED = 'GET_POSTS_FAILED'
+export const GET_POSTS = 'GET_POSTS'
 
 export const fetchPosts = () => dispatch => {
 
-  dispatch({type: GET_ALL_POSTS, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(GET_POSTS))
 
   API.fetchPosts()
-    .then(response => dispatch({
-      type: GET_ALL_POSTS_SUCCESS,
-      posts: response.data,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch({
-      type: GET_ALL_POSTS_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .then(response => dispatch(postsSuccessfulAction(GET_POSTS_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(GET_POSTS_FAILED, reason)))
 }
 
 //endregion
@@ -34,19 +46,11 @@ export const GET_CATEGORY_POST = 'GET_CATEGORY_POST'
 
 export const fetchCategoryPosts = category => dispatch => {
 
-  dispatch({type: GET_CATEGORY_POST, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(GET_CATEGORY_POST))
 
   API.fetchCategoryPosts(category)
-    .then(response => dispatch({
-      type: GET_CATEGORY_POST_SUCCESS,
-      posts: response.data,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch({
-      type: GET_CATEGORY_POST_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .then(response => dispatch(postsSuccessfulAction(GET_CATEGORY_POST_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(GET_CATEGORY_POST_FAILED, reason)))
 }
 
 //endregion
@@ -59,19 +63,11 @@ export const GET_POST_DETAILS = 'GET_POST_DETAILS'
 
 export const fetchPostDetails = postID => dispatch => {
 
-  dispatch({type: GET_POST_DETAILS, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(GET_POST_DETAILS))
 
   API.fetchPostDetails(postID)
-    .then(response => dispatch({
-      type: GET_POST_DETAILS_SUCCESS,
-      post: response.data,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch({
-      type: GET_POST_DETAILS_FAILED,
-      failedReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .then(response => dispatch(postSuccessfulAction(GET_POST_DETAILS_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(GET_POST_DETAILS_FAILED, reason)))
 }
 
 //endregion
@@ -84,7 +80,7 @@ export const UP_VOTE_POST = 'UP_VOTE_POST'
 
 export const upVotePost = postId => dispatch => {
 
-  dispatch({type: UP_VOTE_POST, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(UP_VOTE_POST))
 
   API.voteOnPost(postId, 'upVote')
     .then(response => dispatch({
@@ -93,11 +89,7 @@ export const upVotePost = postId => dispatch => {
       voteScore: response.data.voteScore,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: UP_VOTE_POST_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
 }
 
 //endregion
@@ -110,7 +102,7 @@ export const DOWN_VOTE_POST = 'DOWN_VOTE_POST'
 
 export const downVotePost = postId => dispatch => {
 
-  dispatch({type: DOWN_VOTE_POST, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(DOWN_VOTE_POST))
 
   API.voteOnPost(postId, 'downVote')
     .then(response => dispatch({
@@ -119,11 +111,7 @@ export const downVotePost = postId => dispatch => {
       voteScore: response.data.voteScore,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: DOWN_VOTE_POST_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
 }
 
 //endregion
@@ -136,7 +124,7 @@ export const DELETE_POST = 'DELETE_POST'
 
 export const deletePost = postId => dispatch => {
 
-  dispatch({type: DELETE_POST, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(DELETE_POST))
 
   API.deletePost(postId)
     .then(response => dispatch({
@@ -144,11 +132,7 @@ export const deletePost = postId => dispatch => {
       postId: response.data.id,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: DELETE_POST_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
 }
 
 //endregion
@@ -166,4 +150,3 @@ export const sortPost = ({sortBy, orderBy}) => {
 }
 
 //endregion
-

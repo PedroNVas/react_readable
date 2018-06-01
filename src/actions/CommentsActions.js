@@ -9,7 +9,7 @@ export const GET_POST_COMMENTS = 'GET_POST_COMMENTS'
 
 export const fetchPostComments = postId => dispatch => {
 
-  dispatch({type: GET_POST_COMMENTS, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(GET_POST_COMMENTS))
 
   API.fetchPostComments(postId)
     .then(response => dispatch({
@@ -18,11 +18,7 @@ export const fetchPostComments = postId => dispatch => {
       comments: response.data,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: GET_POST_COMMENTS_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(GET_POST_COMMENTS_FAILED, reason)))
 }
 
 //endregion
@@ -35,7 +31,7 @@ export const UP_VOTE_COMMENT = 'UP_VOTE_COMMENT'
 
 export const upVoteComment = commentId => dispatch => {
 
-  dispatch({type: UP_VOTE_COMMENT, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(UP_VOTE_COMMENT))
 
   API.voteOnComment(commentId, 'upVote')
     .then(response => dispatch({
@@ -45,11 +41,7 @@ export const upVoteComment = commentId => dispatch => {
       voteScore: response.data.voteScore,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: UP_VOTE_COMMENT_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_COMMENT_FAILED, reason)))
 }
 
 //endregion
@@ -62,7 +54,7 @@ export const DOWN_VOTE_COMMENT = 'DOWN_VOTE_COMMENT'
 
 export const downVoteComment = commentId => dispatch => {
 
-  dispatch({type: DOWN_VOTE_COMMENT, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(DOWN_VOTE_COMMENT))
 
   API.voteOnComment(commentId, 'downVote')
     .then(response => dispatch({
@@ -72,11 +64,7 @@ export const downVoteComment = commentId => dispatch => {
       voteScore: response.data.voteScore,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: DOWN_VOTE_COMMENT_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(DOWN_VOTE_COMMENT_FAILED, reason)))
 }
 
 //endregion
@@ -89,7 +77,7 @@ export const DELETE_COMMENT = 'DELETE_COMMENT'
 
 export const deleteComment = commentId => dispatch => {
 
-  dispatch({type: DELETE_COMMENT, ...ActionUtils.loadingState()})
+  dispatch(ActionUtils.loadingAction(DELETE_COMMENT))
 
   API.deleteComment(commentId)
     .then(response => dispatch({
@@ -98,11 +86,7 @@ export const deleteComment = commentId => dispatch => {
       commentId,
       ...ActionUtils.successState()
     }))
-    .catch(reason => dispatch({
-      type: DELETE_COMMENT_FAILED,
-      failReason: reason,
-      ...ActionUtils.failedState()
-    }))
+    .catch(reason => dispatch(ActionUtils.failedAction(DELETE_COMMENT_FAILED, reason)))
 }
 
 //endregion

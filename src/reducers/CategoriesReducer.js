@@ -13,7 +13,7 @@ const categories = (state = initialCategoriesState, action) => {
   const {categories, loading, success, failed, failReason} = action
 
   switch (action.type) {
-    case CategoriesActions.ADD_ALL_CATEGORIES:
+    case CategoriesActions.GET_CATEGORIES:
       return {
         ...state,
         success,
@@ -21,7 +21,7 @@ const categories = (state = initialCategoriesState, action) => {
         failed
       }
 
-    case CategoriesActions.ADD_ALL_CATEGORIES_SUCCESS:
+    case CategoriesActions.GET_CATEGORIES_SUCCESS:
       return {
         ...state,
         categories,
@@ -30,7 +30,7 @@ const categories = (state = initialCategoriesState, action) => {
         failed
       }
 
-    case CategoriesActions.ADD_ALL_CATEGORIES_FAILED:
+    case CategoriesActions.GET_CATEGORIES_FAILED:
       return {
         ...state,
         success,

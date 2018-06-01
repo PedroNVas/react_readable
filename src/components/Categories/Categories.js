@@ -147,7 +147,7 @@ export class Categories extends PureComponent {
               <div style={style.logo}>
                 {this.renderCategoryLogo(selectedCategory, 70, true)}
                 <Collapse in={fadeOpen} unmountOnExit>
-                  Current Category
+                  <p>Current Category</p>
                 </Collapse>
               </div>
             </Grid>

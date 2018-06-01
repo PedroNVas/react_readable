@@ -19,7 +19,7 @@ const posts = (state = initialPostsState, action) => {
   const {posts, loading, success, failed, failReason} = action
 
   switch (action.type) {
-    case PostsActions.GET_ALL_POSTS:
+    case PostsActions.GET_POSTS:
     case PostsActions.UP_VOTE_POST:
     case PostsActions.DOWN_VOTE_POST:
     case PostsActions.DELETE_POST:
@@ -31,7 +31,7 @@ const posts = (state = initialPostsState, action) => {
         failed
       }
 
-    case PostsActions.GET_ALL_POSTS_SUCCESS:
+    case PostsActions.GET_POSTS_SUCCESS:
       return {
         ...state,
         posts,
@@ -58,7 +58,7 @@ const posts = (state = initialPostsState, action) => {
       }
     }
 
-    case PostsActions.GET_ALL_POSTS_FAILED:
+    case PostsActions.GET_POSTS_FAILED:
     case PostsActions.UP_VOTE_POST_FAILED:
     case PostsActions.DOWN_VOTE_POST_FAILED:
     case PostsActions.DELETE_POST_FAILED:

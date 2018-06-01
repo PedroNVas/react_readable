@@ -1,3 +1,5 @@
+//region state utils
+
 export const loadingState = () => {
   return {
     success: false,
@@ -21,3 +23,24 @@ export const failedState = () => {
     failed: true
   }
 }
+
+//endregion
+
+//region action creator helper
+
+export const loadingAction = (type) => {
+  return {
+    type,
+    ...loadingState()
+  }
+}
+
+export const failedAction = (type, failedReason) => {
+  return {
+    type,
+    failedReason,
+    ...failedState()
+  }
+}
+
+//endregion
