@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchPosts, fetchPostDetails } from '../../actions/PostsActions'
+import { fetchPosts } from '../../actions/PostsActions'
 import Post from '../Post/Post'
 
 export class AllPosts extends Component {
@@ -10,7 +10,7 @@ export class AllPosts extends Component {
     fetchPosts: PropTypes.func.isRequired,
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.props.fetchPosts()
   }
 

@@ -7,17 +7,17 @@ export const ADD_ALL_CATEGORIES = 'ADD_ALL_CATEGORIES'
 
 export const fetchCategories = () => dispatch => {
 
-  dispatch({type: ADD_ALL_CATEGORIES, ...ReducerUtils.loadingAction()})
+  dispatch({type: ADD_ALL_CATEGORIES, ...ReducerUtils.loadingState()})
 
   API.fetchCategories()
     .then(response => dispatch({
       type: ADD_ALL_CATEGORIES_SUCCESS,
       categories: response.data.categories,
-      ...ReducerUtils.successAction()
+      ...ReducerUtils.successState()
     }))
     .catch(reason => dispatch({
       type: ADD_ALL_CATEGORIES_FAILED,
       failReason: reason,
-      ...ReducerUtils.failedAction()
+      ...ReducerUtils.failedState()
     }))
 }

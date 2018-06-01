@@ -2,6 +2,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { fetchPostComments } from '../../actions/CommentsActions'
 import { fetchPostDetails } from '../../actions/PostsActions'
 import Post from '../Post/Post'
 
@@ -11,15 +12,36 @@ export class PostDetails extends Component {
     fetchPostDetails: PropTypes.func.isRequired,
   }
 
-  componentWillMount () {
-    const postId = this.props.match.params.id
+  state = {
+    urlPostId: null,
+  }
+
+  static getDerivedStateFromProps (props, state) {
+    const {postId} = props.match.params
+    if (postId !== state) {
+      return {
+        urlPostId: postId
+      }
+    }
+    return null
+  }
+
+  componentDidMount () {
+    const {postId} = this.props.match.params
     this.props.fetchPostDetails(postId)
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.urlPostId !== prevState.urlPostId) {
+      const {postId} = this.props.match.params
+      this.props.fetchPostDetails(postId)
+    }
   }
 
   render () {
 
     const {postDetails} = this.props
-    const {post, success, loading, failed} = postDetails
+    const {post, comments, success, loading, failed} = postDetails
 
     let content = null
 
@@ -54,7 +76,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchPostDetails: postId => dispatch(fetchPostDetails(postId))
+    fetchPostDetails: postId => dispatch(fetchPostDetails(postId)),
+    fetchPostComments: postId => dispatch(fetchPostComments(postId))
   }
 }
 

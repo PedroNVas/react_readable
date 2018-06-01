@@ -33,8 +33,7 @@ const style = {
   button: {
     display: 'inline-grid',
     margin: '0% 5% 0% 5%',
-  }
-
+  },
 }
 
 export class Categories extends PureComponent {
@@ -80,7 +79,7 @@ export class Categories extends PureComponent {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.props.fetchCategories()
   }
 
@@ -122,8 +121,9 @@ export class Categories extends PureComponent {
                         onClick={() => this.setState({selectedCategory: 'all'})}
                         component={Link} to="/">
                   {this.renderCategoryLogo('all', 50, false)}
-                  <Collapse in={fadeOpen} unmountOnExit>
-                    All
+                  <Collapse in={fadeOpen}>
+                    <p>All</p>
+                    <p>Categories</p>
                   </Collapse>
                 </Button>
                 {categories.map(category => {
@@ -134,8 +134,8 @@ export class Categories extends PureComponent {
                             onClick={() => this.setState({selectedCategory: category.name})}
                             component={Link} to={routeTo}>
                       {this.renderCategoryLogo(category.name, 50, false)}
-                      <Collapse in={fadeOpen} unmountOnExit>
-                        {category.name}
+                      <Collapse in={fadeOpen}>
+                        <p>{category.name}</p>
                       </Collapse>
                     </Button>
                   )

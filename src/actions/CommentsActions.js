@@ -1,28 +1,27 @@
 import * as API from '../api/API'
 import * as ActionUtils from '../utils/ActionUtils'
 
-//region fetchComments
+//region fetchPostComments
 
-export const ADD_ALL_COMMENTS_SUCCESS = 'ADD_ALL_COMMENTS_SUCCESS'
-export const ADD_ALL_COMMENTS_FAILED = 'ADD_ALL_COMMENTS_FAILED'
-export const ADD_ALL_COMMENTS = 'ADD_ALL_COMMENTS'
+export const GET_POST_COMMENTS_SUCCESS = 'GET_POST_COMMENTS_SUCCESS'
+export const GET_POST_COMMENTS_FAILED = 'GET_POST_COMMENTS_FAILED'
+export const GET_POST_COMMENTS = 'GET_POST_COMMENTS'
 
-export const fetchComments = postId => dispatch => {
+export const fetchPostComments = postId => dispatch => {
 
-  dispatch({type: ADD_ALL_COMMENTS, ...ActionUtils.loadingAction()})
+  dispatch({type: GET_POST_COMMENTS, ...ActionUtils.loadingState()})
 
   API.fetchPostComments(postId)
     .then(response => dispatch({
-        type: ADD_ALL_COMMENTS_SUCCESS,
-        postId,
-        comments: response.data,
-        ...ActionUtils.successAction()
-      })
-    )
+      type: GET_POST_COMMENTS_SUCCESS,
+      postId,
+      comments: response.data,
+      ...ActionUtils.successState()
+    }))
     .catch(reason => dispatch({
-      type: ADD_ALL_COMMENTS_FAILED,
+      type: GET_POST_COMMENTS_FAILED,
       failReason: reason,
-      ...ActionUtils.failedAction()
+      ...ActionUtils.failedState()
     }))
 }
 
@@ -36,23 +35,21 @@ export const UP_VOTE_COMMENT = 'UP_VOTE_COMMENT'
 
 export const upVoteComment = commentId => dispatch => {
 
-  dispatch({type: UP_VOTE_COMMENT, ...ActionUtils.loadingAction()})
+  dispatch({type: UP_VOTE_COMMENT, ...ActionUtils.loadingState()})
 
   API.voteOnComment(commentId, 'upVote')
     .then(response => dispatch({
-        type: UP_VOTE_COMMENT_SUCCESS,
-        postId: response.data.parentId,
-        commentId,
-        voteScore: response.data.voteScore,
-        ...ActionUtils.successAction()
-      })
-    )
+      type: UP_VOTE_COMMENT_SUCCESS,
+      postId: response.data.parentId,
+      commentId,
+      voteScore: response.data.voteScore,
+      ...ActionUtils.successState()
+    }))
     .catch(reason => dispatch({
       type: UP_VOTE_COMMENT_FAILED,
       failReason: reason,
-      ...ActionUtils.failedAction()
+      ...ActionUtils.failedState()
     }))
-
 }
 
 //endregion
@@ -65,7 +62,7 @@ export const DOWN_VOTE_COMMENT = 'DOWN_VOTE_COMMENT'
 
 export const downVoteComment = commentId => dispatch => {
 
-  dispatch({type: DOWN_VOTE_COMMENT, ...ActionUtils.loadingAction()})
+  dispatch({type: DOWN_VOTE_COMMENT, ...ActionUtils.loadingState()})
 
   API.voteOnComment(commentId, 'downVote')
     .then(response => dispatch({
@@ -73,14 +70,13 @@ export const downVoteComment = commentId => dispatch => {
       postId: response.data.parentId,
       commentId,
       voteScore: response.data.voteScore,
-      ...ActionUtils.successAction()
+      ...ActionUtils.successState()
     }))
     .catch(reason => dispatch({
-        type: DOWN_VOTE_COMMENT_FAILED,
-        failReason: reason,
-        ...ActionUtils.failedAction()
-      })
-    )
+      type: DOWN_VOTE_COMMENT_FAILED,
+      failReason: reason,
+      ...ActionUtils.failedState()
+    }))
 }
 
 //endregion
@@ -93,21 +89,20 @@ export const DELETE_COMMENT = 'DELETE_COMMENT'
 
 export const deleteComment = commentId => dispatch => {
 
-  dispatch({type: DELETE_COMMENT, ...ActionUtils.loadingAction()})
+  dispatch({type: DELETE_COMMENT, ...ActionUtils.loadingState()})
 
   API.deleteComment(commentId)
     .then(response => dispatch({
       type: DELETE_COMMENT_SUCCESS,
       postId: response.data.parentId,
       commentId,
-      ...ActionUtils.successAction()
+      ...ActionUtils.successState()
     }))
     .catch(reason => dispatch({
       type: DELETE_COMMENT_FAILED,
       failReason: reason,
-      ...ActionUtils.failedAction()
+      ...ActionUtils.failedState()
     }))
-
 }
 
 //endregion

@@ -1,27 +1,46 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchPosts } from '../../actions/PostsActions'
+import { fetchCategoryPosts } from '../../actions/PostsActions'
 import Post from '../Post/Post'
 
 export class CategoryPosts extends Component {
 
   static propTypes = {
-    category: PropTypes.string.isRequired
+    fetchCategoryPosts: PropTypes.func.isRequired,
+  }
+
+  state = {
+    urlCategory: null,
+  }
+
+  static getDerivedStateFromProps (props, state) {
+    const {category} = props.match.params
+    if (category !== state) {
+      return {
+        urlCategory: category
+      }
+    }
+    return null
   }
 
   componentDidMount () {
-    const {posts} = this.props.postsState
+    const {category} = this.props.match.params
+    this.props.fetchCategoryPosts(category)
+  }
 
-    if (posts.length === 0) {
-      this.props.fetchPosts()
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.urlCategory !== prevState.urlCategory) {
+      const {category} = this.props.match.params
+      this.props.fetchCategoryPosts(category)
     }
   }
 
   render () {
 
-    const {postsState, category} = this.props
-    const {posts} = postsState
+    const {category} = this.props.match.params
+    const {postsState} = this.props
+    const {posts, success, loading, failed} = postsState
 
     return (
       <div>
@@ -44,7 +63,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchPosts: () => dispatch(fetchPosts()),
+    fetchCategoryPosts: category => dispatch(fetchCategoryPosts(category)),
   }
 }
 

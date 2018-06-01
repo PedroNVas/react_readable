@@ -27,7 +27,7 @@ class AdditionalActions extends PureComponent {
 
   render () {
 
-    const {showing, isComment, id, onDelete} = this.props
+    const {showing, isComment, id, onDelete, category} = this.props
 
     return (
       <Slide direction="left" in={showing} style={style.slide}>
@@ -38,8 +38,9 @@ class AdditionalActions extends PureComponent {
           <IconButton onClick={() => onDelete(id)}>
             <DeleteIcon />
           </IconButton>
+          {/*https://material-ui.com/demos/dialogs/ TO DELETE POST*/}
           {!isComment &&
-          <Link to={`/${id}`}>
+          <Link to={`/${category}/${id}`}>
             <IconButton>
               <InfoIcon />
             </IconButton>

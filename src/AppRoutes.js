@@ -13,10 +13,8 @@ export default function AppRoutes () {
 
         <Switch>
           <Route exact path='/' component={AllPosts} />
-          <Route exact path='/react' component={() => <CategoryPosts category='react' />} />
-          <Route exact path='/redux' component={() => <CategoryPosts category='redux' />} />
-          <Route exact path='/udacity' component={() => <CategoryPosts category='udacity' />} />
-          <Route exact path="/:id" component={PostDetails} />
+          <Route exact path='/:category' component={CategoryPosts} />
+          <Route exact path="/:category/:postId" component={PostDetails} />
         </Switch>
       </div>
     </BrowserRouter>

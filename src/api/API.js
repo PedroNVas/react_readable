@@ -16,8 +16,7 @@ const instance = axios.create({
 
 export const fetchCategories = () => instance.get('/categories')
 
-// NOT SURE IF I'M GOING TO USE,
-export const fetchPostCategories = category => instance.get(`/${category}/posts`)
+export const fetchCategoryPosts = category => instance.get(`/${category}/posts`)
 
 export const fetchPosts = () => instance.get('/posts')
 
@@ -40,8 +39,6 @@ export const createPost = ({title, body, author, category}) => instance.post('/p
   category
 })
 
-export const voteOnPost = (postID, voteType) => instance.post(`/posts/${postID}`, {option: voteType})
-
 export const createComment = ({body, author, parentId}) => instance.post('/comments', {
   id: uuid(),
   timestamp: Date.now(),
@@ -49,6 +46,8 @@ export const createComment = ({body, author, parentId}) => instance.post('/comme
   author,
   parentId
 })
+
+export const voteOnPost = (postID, voteType) => instance.post(`/posts/${postID}`, {option: voteType})
 
 export const voteOnComment = (commentId, voteType) => instance.post(`/comments/${commentId}`, {option: voteType})
 

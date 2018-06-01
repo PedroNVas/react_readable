@@ -33,7 +33,7 @@ const comments = (state = initialCommentsState, action) => {
   const {commentId, voteScore} = action
 
   switch (action.type) {
-    case CommentsActions.ADD_ALL_COMMENTS:
+    case CommentsActions.GET_POST_COMMENTS:
     case CommentsActions.UP_VOTE_COMMENT:
     case CommentsActions.DOWN_VOTE_COMMENT:
     case CommentsActions.DELETE_COMMENT:
@@ -44,7 +44,7 @@ const comments = (state = initialCommentsState, action) => {
         failed
       }
 
-    case CommentsActions.ADD_ALL_COMMENTS_SUCCESS:
+    case CommentsActions.GET_POST_COMMENTS_SUCCESS:
       return {
         ...state,
         comments: new Map(state.comments).set(postId, comments),
@@ -53,7 +53,7 @@ const comments = (state = initialCommentsState, action) => {
         failed
       }
 
-    case CommentsActions.ADD_ALL_COMMENTS_FAILED:
+    case CommentsActions.GET_POST_COMMENTS_FAILED:
     case CommentsActions.UP_VOTE_COMMENT_FAILED:
     case CommentsActions.DOWN_VOTE_COMMENT_FAILED:
     case CommentsActions.DELETE_COMMENT_FAILED: {

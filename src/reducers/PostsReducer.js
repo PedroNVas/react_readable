@@ -9,15 +9,21 @@ const initialPostsState = {
   failReason: ''
 }
 
+const contains = (object, list) => {
+  const found = _.find(list, item => _.isEqual(object, item))
+  return !!(_.isObject(found))
+}
+
 const posts = (state = initialPostsState, action) => {
 
   const {posts, loading, success, failed, failReason} = action
 
   switch (action.type) {
-    case PostsActions.ADD_ALL_POSTS:
+    case PostsActions.GET_ALL_POSTS:
     case PostsActions.UP_VOTE_POST:
     case PostsActions.DOWN_VOTE_POST:
     case PostsActions.DELETE_POST:
+    case PostsActions.GET_CATEGORY_POST:
       return {
         ...state,
         success,
@@ -25,7 +31,7 @@ const posts = (state = initialPostsState, action) => {
         failed
       }
 
-    case PostsActions.ADD_ALL_POSTS_SUCCESS:
+    case PostsActions.GET_ALL_POSTS_SUCCESS:
       return {
         ...state,
         posts,
@@ -34,10 +40,29 @@ const posts = (state = initialPostsState, action) => {
         failed
       }
 
-    case PostsActions.ADD_ALL_POSTS_FAILED:
+    case PostsActions.GET_CATEGORY_POST_SUCCESS: {
+
+      let newPosts = state.posts
+      for (const post of posts) {
+        if (!contains(post, state.posts)) {
+          newPosts.push(post)
+        }
+      }
+
+      return {
+        ...state,
+        posts: newPosts,
+        success,
+        loading,
+        failed
+      }
+    }
+
+    case PostsActions.GET_ALL_POSTS_FAILED:
     case PostsActions.UP_VOTE_POST_FAILED:
     case PostsActions.DOWN_VOTE_POST_FAILED:
     case PostsActions.DELETE_POST_FAILED:
+    case PostsActions.GET_CATEGORY_POST_FAILED:
       return {
         ...state,
         success,

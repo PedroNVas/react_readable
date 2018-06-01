@@ -1,4 +1,4 @@
-export const loadingAction = () => {
+export const loadingState = () => {
   return {
     success: false,
     loading: true,
@@ -6,7 +6,7 @@ export const loadingAction = () => {
   }
 }
 
-export const successAction = () => {
+export const successState = () => {
   return {
     success: true,
     loading: false,
@@ -14,7 +14,7 @@ export const successAction = () => {
   }
 }
 
-export const failedAction = () => {
+export const failedState = () => {
   return {
     success: false,
     loading: false,

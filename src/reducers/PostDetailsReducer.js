@@ -2,6 +2,7 @@ import * as PostsActions from '../actions/PostsActions'
 
 const initialPostDetailsState = {
   post: {},
+  comments: [],
   success: false,
   loading: false,
   failed: false,
