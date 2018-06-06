@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { uuid } from '../utils/AppUtils'
 
 const authenticationToken = Math.random().toString(36).substr(-8)
 
@@ -30,8 +29,8 @@ export const fetchCommentDetails = commentId => instance.get(`/comments/${commen
 
 //region POST API
 
-export const createPost = ({title, body, author, category}) => instance.post('/posts', {
-  id: uuid(),
+export const createPost = (id, title, body, author, category) => instance.post('/posts', {
+  id,
   timestamp: Date.now(),
   title,
   body,
@@ -39,8 +38,8 @@ export const createPost = ({title, body, author, category}) => instance.post('/p
   category
 })
 
-export const createComment = ({body, author, parentId}) => instance.post('/comments', {
-  id: uuid(),
+export const createComment = (commentId, body, author, parentId) => instance.post('/comments', {
+  id: commentId,
   timestamp: Date.now(),
   body,
   author,
@@ -55,9 +54,9 @@ export const voteOnComment = (commentId, voteType) => instance.post(`/comments/$
 
 //region PUT API
 
-export const updatePost = (postId, {title, body}) => instance.put(`/posts/${postId}`, {title, body})
+export const updatePost = (postId, title, body) => instance.put(`/posts/${postId}`, {title, body})
 
-export const updateComment = (commentId, {body}) => instance.put(`/comments/${commentId}`, {
+export const updateComment = (commentId, body) => instance.put(`/comments/${commentId}`, {
   timestamp: Date.now(),
   body
 })

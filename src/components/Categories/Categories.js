@@ -4,18 +4,14 @@ import Collapse from '@material-ui/core/Collapse'
 import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import SubjectIcon from '@material-ui/icons/Subject'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import _ from 'underscore'
 import { fetchCategories } from '../../actions/CategoriesActions'
-import react from '../../static/images/react.png'
-import redux from '../../static/images/redux.png'
-import udacity from '../../static/images/udacity.png'
+import { categoryLogo } from '../../utils/AppUtils'
 import Sorting from '../Sorting/Sorting'
-import './Categories.css'
 
 const style = {
   title: {
@@ -49,35 +45,11 @@ export class Categories extends PureComponent {
 
   openFade = _.debounce(() => {
     this.setState({fadeOpen: true})
-  }, 150)
+  }, 30)
 
   closeFade = _.debounce(() => {
     this.setState({fadeOpen: false})
-  }, 150)
-
-  renderCategoryLogo = (category, height, animate) => {
-    const pixelHeight = `${height}px`
-    switch (category) {
-      case 'react':
-        return animate ? <img src={react} height={pixelHeight} className='logo' /> : <img
-          src={react} height={pixelHeight} />
-
-      case 'redux':
-        return animate ? <img src={redux} height={pixelHeight} className='logo' /> : <img
-          src={redux} height={pixelHeight} />
-
-      case 'udacity':
-        return animate ? <img src={udacity} height={pixelHeight} className='logo' /> : <img
-          src={udacity} height={pixelHeight} />
-
-      case 'all':
-        return animate ? <SubjectIcon style={{fontSize: (height - 5)}} className='logo' /> :
-          <SubjectIcon style={{fontSize: (height - 5)}} />
-
-      default:
-        return <SubjectIcon style={{fontSize: (height - 5)}} className='logo' />
-    }
-  }
+  }, 100)
 
   componentDidMount () {
     this.props.fetchCategories()
@@ -101,10 +73,11 @@ export class Categories extends PureComponent {
       )
     } else if (loading) {
       content = (
-        <Paper style={style.paper}>
-          <p>Loading</p>
-          <CircularProgress />
-        </Paper>
+        <Grid container spacing={24} justify='center'>
+          <Grid item xs={12} sm={12}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
       )
     } else if (success) {
 
@@ -120,10 +93,9 @@ export class Categories extends PureComponent {
                 <Button style={style.button}
                         onClick={() => this.setState({selectedCategory: 'all'})}
                         component={Link} to="/">
-                  {this.renderCategoryLogo('all', 50, false)}
+                  {categoryLogo('all', 50)}
                   <Collapse in={fadeOpen}>
                     <p>All</p>
-                    <p>Categories</p>
                   </Collapse>
                 </Button>
                 {categories.map(category => {
@@ -133,7 +105,7 @@ export class Categories extends PureComponent {
                             style={style.button}
                             onClick={() => this.setState({selectedCategory: category.name})}
                             component={Link} to={routeTo}>
-                      {this.renderCategoryLogo(category.name, 50, false)}
+                      {categoryLogo(category.name, 50)}
                       <Collapse in={fadeOpen}>
                         <p>{category.name}</p>
                       </Collapse>
@@ -145,8 +117,8 @@ export class Categories extends PureComponent {
 
             <Grid item xs={12} sm={2}>
               <div style={style.logo}>
-                {this.renderCategoryLogo(selectedCategory, 70, true)}
-                <Collapse in={fadeOpen} unmountOnExit>
+                {categoryLogo(selectedCategory, 70)}
+                <Collapse in={fadeOpen}>
                   <p>Current Category</p>
                 </Collapse>
               </div>

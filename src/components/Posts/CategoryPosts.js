@@ -1,7 +1,8 @@
+import Button from '@material-ui/core/es/Button'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchCategoryPosts } from '../../actions/PostsActions'
+import { addNewCategoryPost, fetchCategoryPosts } from '../../actions/PostsActions'
 import Post from '../Post/Post'
 
 export class CategoryPosts extends Component {
@@ -45,10 +46,13 @@ export class CategoryPosts extends Component {
     return (
       <div>
         {posts
-          .filter(post => post.category === category)
-          .map(post => {
-            return post.deleted ? null : <Post key={post.id} data={post} />
-          })}
+          .filter(post => post.deleted !== true && post.category === category)
+          .map(post =>
+            <Post key={post.id} data={post} isLoading={loading} />
+          )}
+        <Button onClick={() => this.props.addNewCategoryPost(category)}>
+          {`Create ${category} post`}
+        </Button>
       </div>
     )
   }
@@ -64,6 +68,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchCategoryPosts: category => dispatch(fetchCategoryPosts(category)),
+    addNewCategoryPost: category => dispatch(addNewCategoryPost(category))
   }
 }
 

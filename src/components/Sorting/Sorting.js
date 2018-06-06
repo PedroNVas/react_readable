@@ -10,12 +10,12 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { FaSortAmountAsc, FaSortAmountDesc } from 'react-icons/lib/fa'
 import { connect } from 'react-redux'
-import { sortPost } from '../../actions/PostsActions'
+import { sortPosts } from '../../actions/PostsActions'
 
 const style = {
   sorting: {
-    textAlign: 'left',
-    margin: '0% 20% 0% 20%'
+    textAlign: 'center',
+    margin: '0% 0% 0% 0%'
   }
 }
 
@@ -26,7 +26,7 @@ export class Sorting extends PureComponent {
   }
 
   state = {
-    sortBy: '',
+    sortBy: 'voteScore',
     orderBy: 'desc'
   }
 
@@ -88,9 +88,6 @@ export class Sorting extends PureComponent {
               id: 'sort-by',
             }}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
             <MenuItem value="voteScore">
               <em>Vote Score</em>
             </MenuItem>
@@ -114,7 +111,7 @@ export class Sorting extends PureComponent {
 
 const mapDispatchToProps = dispatch => {
   return {
-    sortPosts: (sortBy, orderBy) => dispatch(sortPost({sortBy, orderBy}))
+    sortPosts: (sortBy, orderBy) => dispatch(sortPosts({sortBy, orderBy}))
   }
 }
 

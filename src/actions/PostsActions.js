@@ -1,5 +1,7 @@
 import * as API from '../api/API'
 import * as ActionUtils from '../utils/ActionUtils'
+import { uuid } from '../utils/AppUtils'
+import { fetchPostComments } from './CommentsActions'
 
 //region posts action creator helper
 
@@ -66,52 +68,28 @@ export const fetchPostDetails = postID => dispatch => {
   dispatch(ActionUtils.loadingAction(GET_POST_DETAILS))
 
   API.fetchPostDetails(postID)
-    .then(response => dispatch(postSuccessfulAction(GET_POST_DETAILS_SUCCESS, response.data)))
+    .then(response => {
+      dispatch(postSuccessfulAction(GET_POST_DETAILS_SUCCESS, response.data))
+      dispatch(fetchPostComments(response.data.id))
+    })
     .catch(reason => dispatch(ActionUtils.failedAction(GET_POST_DETAILS_FAILED, reason)))
 }
 
 //endregion
 
-//region upVotePost
+//region votePost
 
-export const UP_VOTE_POST_SUCCESS = 'UP_VOTE_POST_SUCCESS'
-export const UP_VOTE_POST_FAILED = 'UP_VOTE_POST_FAILED'
-export const UP_VOTE_POST = 'UP_VOTE_POST'
+export const VOTE_ON_POST_SUCCESS = 'VOTE_ON_POST_SUCCESS'
+export const VOTE_ON_POST_FAILED = 'VOTE_ON_POST_FAILED'
+export const VOTE_ON_POST = 'VOTE_ON_POST'
 
-export const upVotePost = postId => dispatch => {
+export const voteOnPost = (postId, voteType) => dispatch => {
 
-  dispatch(ActionUtils.loadingAction(UP_VOTE_POST))
+  dispatch(ActionUtils.loadingAction(VOTE_ON_POST))
 
-  API.voteOnPost(postId, 'upVote')
-    .then(response => dispatch({
-      type: UP_VOTE_POST_SUCCESS,
-      postId,
-      voteScore: response.data.voteScore,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
-}
-
-//endregion
-
-//region downVotePost
-
-export const DOWN_VOTE_POST_SUCCESS = 'DOWN_VOTE_POST_SUCCESS'
-export const DOWN_VOTE_POST_FAILED = 'DOWN_VOTE_POST_FAILED'
-export const DOWN_VOTE_POST = 'DOWN_VOTE_POST'
-
-export const downVotePost = postId => dispatch => {
-
-  dispatch(ActionUtils.loadingAction(DOWN_VOTE_POST))
-
-  API.voteOnPost(postId, 'downVote')
-    .then(response => dispatch({
-      type: DOWN_VOTE_POST_SUCCESS,
-      postId,
-      voteScore: response.data.voteScore,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
+  API.voteOnPost(postId, voteType)
+    .then(response => dispatch(postSuccessfulAction(VOTE_ON_POST_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(VOTE_ON_POST_FAILED, reason)))
 }
 
 //endregion
@@ -127,12 +105,8 @@ export const deletePost = postId => dispatch => {
   dispatch(ActionUtils.loadingAction(DELETE_POST))
 
   API.deletePost(postId)
-    .then(response => dispatch({
-      type: DELETE_POST_SUCCESS,
-      postId: response.data.id,
-      ...ActionUtils.successState()
-    }))
-    .catch(reason => dispatch(ActionUtils.failedAction(UP_VOTE_POST_FAILED, reason)))
+    .then(response => dispatch(postSuccessfulAction(DELETE_POST_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(DELETE_POST_FAILED, reason)))
 }
 
 //endregion
@@ -141,12 +115,95 @@ export const deletePost = postId => dispatch => {
 
 export const SORT_POSTS = 'SORT_POSTS'
 
-export const sortPost = ({sortBy, orderBy}) => {
+export const sortPosts = ({sortBy, orderBy}) => {
   return {
     type: SORT_POSTS,
     sortBy,
     orderBy
   }
+}
+
+//endregion
+
+//region updatePost
+
+const editPostAction = (type, postId, editMode) => {
+  return {
+    type,
+    postId,
+    editMode
+  }
+}
+
+export const EDIT_POST = 'EDIT_POST'
+
+export const editPost = postId => {
+  return editPostAction(EDIT_POST, postId, true)
+}
+
+export const CANCEL_EDIT_POST = 'CANCEL_EDIT_POST'
+
+export const cancelEditPost = postId => {
+  return editPostAction(CANCEL_EDIT_POST, postId, false)
+}
+
+export const UPDATE_POST_SUCCESS = 'UPDATE_POST_SUCCESS'
+export const UPDATE_POST_FAILED = 'UPDATE_POST_FAILED'
+export const UPDATE_POST = 'UPDATE_POST'
+
+export const updatePost = (postId, postTitle, postBody) => dispatch => {
+
+  dispatch(ActionUtils.loadingAction(UPDATE_POST))
+
+  API.updatePost(postId, postTitle, postBody)
+    .then(response => dispatch(postSuccessfulAction(UPDATE_POST_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(UPDATE_POST_FAILED, reason)))
+}
+
+//endregion
+
+//region createPost
+
+export const ADD_NEW_POST = 'ADD_NEW_POST'
+
+export const addNewPost = () => {
+  return {
+    type: ADD_NEW_POST,
+    id: uuid(),
+    createMode: true
+  }
+}
+
+export const addNewCategoryPost = category => {
+  return {
+    type: ADD_NEW_POST,
+    id: uuid(),
+    category,
+    createMode: true
+  }
+}
+
+export const CANCEL_ADD_NEW_POST = 'CANCEL_ADD_NEW_POST'
+
+export const cancelAddNewPost = postId => {
+  return {
+    type: CANCEL_ADD_NEW_POST,
+    postId
+  }
+}
+
+export const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS'
+export const CREATE_POST_FAILED = 'CREATE_POST_FAILED'
+export const CREATE_POST = 'CREATE_POST'
+
+export const createPost = (postId, postTitle, postBody, postAuthor, postCategory) => dispatch => {
+
+  dispatch(ActionUtils.loadingAction(CREATE_POST))
+
+  API.createPost(postId, postTitle, postBody, postAuthor, postCategory)
+    .then(response => dispatch(postSuccessfulAction(CREATE_POST_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(CREATE_POST_FAILED, reason)))
+
 }
 
 //endregion

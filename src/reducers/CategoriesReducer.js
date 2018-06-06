@@ -13,6 +13,9 @@ const categories = (state = initialCategoriesState, action) => {
   const {categories, loading, success, failed, failReason} = action
 
   switch (action.type) {
+
+    //region loading actions
+
     case CategoriesActions.GET_CATEGORIES:
       return {
         ...state,
@@ -20,6 +23,23 @@ const categories = (state = initialCategoriesState, action) => {
         loading,
         failed
       }
+
+    //endregion
+
+    //region failed actions
+
+    case CategoriesActions.GET_CATEGORIES_FAILED:
+      return {
+        ...state,
+        success,
+        loading,
+        failed,
+        failReason
+      }
+
+    //endregion
+
+    //region success actions
 
     case CategoriesActions.GET_CATEGORIES_SUCCESS:
       return {
@@ -30,14 +50,7 @@ const categories = (state = initialCategoriesState, action) => {
         failed
       }
 
-    case CategoriesActions.GET_CATEGORIES_FAILED:
-      return {
-        ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+    //endregion
 
     default:
       return state

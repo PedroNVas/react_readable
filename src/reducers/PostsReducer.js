@@ -19,11 +19,15 @@ const posts = (state = initialPostsState, action) => {
   const {posts, loading, success, failed, failReason} = action
 
   switch (action.type) {
+
+    //region loading actions
+
     case PostsActions.GET_POSTS:
-    case PostsActions.UP_VOTE_POST:
-    case PostsActions.DOWN_VOTE_POST:
+    case PostsActions.VOTE_ON_POST:
     case PostsActions.DELETE_POST:
     case PostsActions.GET_CATEGORY_POST:
+    case PostsActions.UPDATE_POST:
+    case PostsActions.CREATE_POST:
       return {
         ...state,
         success,
@@ -39,6 +43,28 @@ const posts = (state = initialPostsState, action) => {
         loading,
         failed
       }
+
+    //endregion
+
+    //region failed actions
+
+    case PostsActions.GET_POSTS_FAILED:
+    case PostsActions.VOTE_ON_POST_FAILED:
+    case PostsActions.DELETE_POST_FAILED:
+    case PostsActions.GET_CATEGORY_POST_FAILED:
+    case PostsActions.UPDATE_POST_FAILED:
+    case PostsActions.CREATE_POST_FAILED:
+      return {
+        ...state,
+        success,
+        loading,
+        failed,
+        failReason
+      }
+
+    //endregion
+
+    //region success actions
 
     case PostsActions.GET_CATEGORY_POST_SUCCESS: {
 
@@ -58,41 +84,16 @@ const posts = (state = initialPostsState, action) => {
       }
     }
 
-    case PostsActions.GET_POSTS_FAILED:
-    case PostsActions.UP_VOTE_POST_FAILED:
-    case PostsActions.DOWN_VOTE_POST_FAILED:
-    case PostsActions.DELETE_POST_FAILED:
-    case PostsActions.GET_CATEGORY_POST_FAILED:
-      return {
-        ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+    case PostsActions.VOTE_ON_POST_SUCCESS:
+    case PostsActions.DELETE_POST_SUCCESS:
+    case PostsActions.UPDATE_POST_SUCCESS: {
 
-    case PostsActions.UP_VOTE_POST_SUCCESS:
-    case PostsActions.DOWN_VOTE_POST_SUCCESS: {
-      const {postId, voteScore} = action
+      const {post} = action
 
       return {
         ...state,
         posts: state.posts.map(
-          post => post.id === postId ? {...post, voteScore} : post
-        ),
-        success,
-        loading,
-        failed,
-      }
-    }
-
-    case PostsActions.DELETE_POST_SUCCESS: {
-      const {postId} = action
-
-      return {
-        ...state,
-        posts: state.posts.map(
-          post => post.id === postId ? {...post, deleted: true} : post
+          oldPost => oldPost.id === post.id ? post : oldPost
         ),
         success,
         loading,
@@ -103,14 +104,8 @@ const posts = (state = initialPostsState, action) => {
     case PostsActions.SORT_POSTS: {
       const {sortBy, orderBy} = action
 
-      let sortedPosts
-
-      if (sortBy !== '') {
-        sortedPosts = sortBy === '' ? state.posts : _.sortBy(state.posts, sortBy)
-        sortedPosts = orderBy === 'desc' ? sortedPosts.reverse() : sortedPosts
-      } else {
-        sortedPosts = state.posts
-      }
+      let sortedPosts = _.sortBy(state.posts, sortBy)
+      sortedPosts = orderBy === 'desc' ? sortedPosts.reverse() : sortedPosts
 
       return {
         ...state,
@@ -120,6 +115,56 @@ const posts = (state = initialPostsState, action) => {
         failed,
       }
     }
+
+    case PostsActions.EDIT_POST:
+    case PostsActions.CANCEL_EDIT_POST: {
+      const {postId, editMode} = action
+
+      return {
+        ...state,
+        posts: state.posts.map(oldPost => oldPost.id === postId ? {...oldPost, editMode} : oldPost)
+      }
+    }
+
+    case PostsActions.ADD_NEW_POST: {
+
+      const {id, createMode, category} = action
+
+      let newPost
+      if (category !== undefined) {
+        newPost = {id, createMode, category}
+      } else {
+        newPost = {id, createMode}
+      }
+
+      return {
+        ...state,
+        posts: state.posts.concat(newPost)
+      }
+    }
+
+    case PostsActions.CREATE_POST_SUCCESS: {
+      const {post} = action
+
+      return {
+        ...state,
+        posts: state.posts.map(oldPost => oldPost.id === post.id ? post : oldPost),
+        success,
+        loading,
+        failed
+      }
+    }
+
+    case PostsActions.CANCEL_ADD_NEW_POST: {
+      const {postId} = action
+
+      return {
+        ...state,
+        posts: state.posts.filter(post => post.id !== postId)
+      }
+    }
+
+    //endregion
 
     default:
       return state

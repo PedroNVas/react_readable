@@ -1,9 +1,10 @@
-import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/es/Button'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchPostComments } from '../../actions/CommentsActions'
+import { addNewComment, fetchPostComments } from '../../actions/CommentsActions'
 import { fetchPostDetails } from '../../actions/PostsActions'
+import Comment from '../Comment/Comment'
 import Post from '../Post/Post'
 
 export class PostDetails extends Component {
@@ -45,22 +46,32 @@ export class PostDetails extends Component {
 
     let content = null
 
+    // TODO - THIS IS CAUSING THE BLINKING, THINK A BETTER WAY TO MITIGATE
+    // Basically loading keep going forward and back
+    // and it renders loading, and success, loading and success
     if (failed) {
       content = (
         <div>
           Failed to load
         </div>
       )
-    } else if (loading) {
-      content = (
-        <div>
-          <p>Loading</p>
-          <CircularProgress />
-        </div>
-      )
     } else if (success) {
       content = (
-        post.deleted ? <div>Post deleted</div> : <Post key={post.id} data={post} />
+        post.deleted ?
+          <div>Post deleted</div> : (
+            <div>
+              <Post key={post.id} data={post} isLoading={loading} />
+              <p>Comments</p>
+              {comments
+                .filter(comment => comment.deleted !== true)
+                .map(comment =>
+                  <Comment key={comment.id} data={comment} isLoading={loading} />
+                )}
+              <Button onClick={() => this.props.addNewComment(post.id)}>
+                Create comment
+              </Button>
+            </div>
+          )
       )
     }
 
@@ -77,7 +88,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchPostDetails: postId => dispatch(fetchPostDetails(postId)),
-    fetchPostComments: postId => dispatch(fetchPostComments(postId))
+    fetchPostComments: postId => dispatch(fetchPostComments(postId)),
+    addNewComment: parentId => dispatch(addNewComment(parentId))
   }
 }
 
