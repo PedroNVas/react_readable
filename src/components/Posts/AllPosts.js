@@ -2,7 +2,9 @@ import Button from '@material-ui/core/es/Button'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import _ from 'underscore'
 import { addNewPost, fetchPosts } from '../../actions/PostsActions'
+import CreatePost from '../Post/Mode/CreatePost'
 import Post from '../Post/Post'
 
 export class AllPosts extends Component {
@@ -17,19 +19,24 @@ export class AllPosts extends Component {
 
   render () {
 
-    const {postsState} = this.props
+    const {postsState, postCreateState} = this.props
     const {posts, success, loading, failed} = postsState
+
+    const newPost = !_.isEmpty(postCreateState.post) ? <CreatePost /> : null
 
     return (
       <div>
         {posts
           .filter(post => post.deleted !== true)
           .map(post =>
-            <Post key={post.id} data={post} isLoading={loading} />
+            <Post key={post.id} data={post} isLoading={loading} isDetails={false}/>
           )}
+        {newPost}
+        {newPost === null &&
         <Button onClick={() => this.props.addNewPost()}>
           Create post
         </Button>
+        }
       </div>
     )
   }
@@ -38,6 +45,7 @@ export class AllPosts extends Component {
 const mapStateToProps = state => {
   return {
     postsState: state.posts,
+    postCreateState: state.postCreate
   }
 }
 

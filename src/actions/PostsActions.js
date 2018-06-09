@@ -127,24 +127,21 @@ export const sortPosts = ({sortBy, orderBy}) => {
 
 //region updatePost
 
-const editPostAction = (type, postId, editMode) => {
-  return {
-    type,
-    postId,
-    editMode
-  }
-}
-
 export const EDIT_POST = 'EDIT_POST'
 
-export const editPost = postId => {
-  return editPostAction(EDIT_POST, postId, true)
+export const editPost = post => {
+  return {
+    type: EDIT_POST,
+    post,
+  }
 }
 
 export const CANCEL_EDIT_POST = 'CANCEL_EDIT_POST'
 
-export const cancelEditPost = postId => {
-  return editPostAction(CANCEL_EDIT_POST, postId, false)
+export const cancelEditPost = () => {
+  return {
+    type: CANCEL_EDIT_POST
+  }
 }
 
 export const UPDATE_POST_SUCCESS = 'UPDATE_POST_SUCCESS'
@@ -169,26 +166,27 @@ export const ADD_NEW_POST = 'ADD_NEW_POST'
 export const addNewPost = () => {
   return {
     type: ADD_NEW_POST,
-    id: uuid(),
-    createMode: true
+    post: {
+      id: uuid(),
+    }
   }
 }
 
 export const addNewCategoryPost = category => {
   return {
     type: ADD_NEW_POST,
-    id: uuid(),
-    category,
-    createMode: true
+    post: {
+      id: uuid(),
+      category,
+    }
   }
 }
 
 export const CANCEL_ADD_NEW_POST = 'CANCEL_ADD_NEW_POST'
 
-export const cancelAddNewPost = postId => {
+export const cancelAddNewPost = () => {
   return {
     type: CANCEL_ADD_NEW_POST,
-    postId
   }
 }
 

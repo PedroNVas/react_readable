@@ -2,9 +2,11 @@ import Button from '@material-ui/core/es/Button'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import _ from 'underscore'
 import { addNewComment, fetchPostComments } from '../../actions/CommentsActions'
 import { fetchPostDetails } from '../../actions/PostsActions'
 import Comment from '../Comment/Comment'
+import CreateComment from '../Comment/Mode/CreateComment'
 import Post from '../Post/Post'
 
 export class PostDetails extends Component {
@@ -33,7 +35,11 @@ export class PostDetails extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.urlPostId !== prevState.urlPostId) {
+
+    const {comments} = this.props.commentsState
+
+    if (this.state.urlPostId !== prevState.urlPostId
+      || comments.length !== prevProps.commentsState.comments.length) {
       const {postId} = this.props.match.params
       this.props.fetchPostDetails(postId)
     }
@@ -41,8 +47,11 @@ export class PostDetails extends Component {
 
   render () {
 
-    const {postDetails} = this.props
-    const {post, comments, success, loading, failed} = postDetails
+    const {postDetailsState, commentsState, commentCreateState} = this.props
+    const {post, success, loading, failed} = postDetailsState
+    const {comments} = commentsState
+
+    const newComment = !_.isEmpty(commentCreateState.comment) ? <CreateComment /> : null
 
     let content = null
 
@@ -58,20 +67,22 @@ export class PostDetails extends Component {
     } else if (success) {
       content = (
         post.deleted ?
-          <div>Post deleted</div> : (
-            <div>
-              <Post key={post.id} data={post} isLoading={loading} />
-              <p>Comments</p>
-              {comments
-                .filter(comment => comment.deleted !== true)
-                .map(comment =>
-                  <Comment key={comment.id} data={comment} isLoading={loading} />
-                )}
-              <Button onClick={() => this.props.addNewComment(post.id)}>
-                Create comment
-              </Button>
-            </div>
-          )
+          <div>Post Deleted</div> :
+          <div>
+            <Post key={post.id} data={post} isLoading={loading} isDetails={true} />
+            <p>Comments</p>
+            {comments
+              .filter(comment => comment.deleted !== true)
+              .map(comment =>
+                <Comment key={comment.id} data={comment} isLoading={loading} />
+              )}
+            {newComment}
+            {newComment === null &&
+            <Button onClick={() => this.props.addNewComment(post.id)}>
+              Create comment
+            </Button>
+            }
+          </div>
       )
     }
 
@@ -81,7 +92,9 @@ export class PostDetails extends Component {
 
 const mapStateToProps = state => {
   return {
-    postDetails: state.postDetails,
+    postDetailsState: state.postDetails,
+    commentsState: state.comments,
+    commentCreateState: state.commentCreate
   }
 }
 

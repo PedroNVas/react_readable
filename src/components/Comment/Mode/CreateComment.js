@@ -4,12 +4,11 @@ import CardHeader from '@material-ui/core/es/CardHeader'
 import Grid from '@material-ui/core/es/Grid'
 import TextField from '@material-ui/core/es/TextField'
 import Typography from '@material-ui/core/es/Typography'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { cancelAddNewComment, createComment } from '../../../actions/CommentsActions'
 import AvatarCard from '../../Card/AvatarCard'
-import Creating from '../../Creating/Creating'
+import Confirm from '../../Complementary/Confirm'
 
 const style = {
   card: {
@@ -19,10 +18,6 @@ const style = {
 }
 
 export class CreateComment extends PureComponent {
-
-  static propTypes = {
-    data: PropTypes.object.isRequired,
-  }
 
   state = {
     commentAuthor: null,
@@ -47,13 +42,15 @@ export class CreateComment extends PureComponent {
 
   render () {
 
-    const {data} = this.props
+    const {comment} = this.props.commentCreateState
     const {commentAuthor, commentBody} = this.state
 
     return (
       <Card raised={true} style={style.card}>
         <CardHeader
-          avatar={<AvatarCard voteScore={0} opacity={0.3} />}
+          avatar={
+            <AvatarCard voteScore={0} opacity={0.3} />
+          }
           subheader={
             <Grid container spacing={8}>
               <Grid item xs={12} sm={12} style={{display: 'flex'}}>
@@ -84,23 +81,29 @@ export class CreateComment extends PureComponent {
           />
         </CardContent>
 
-        <Creating
+        <Confirm
           firstButtonText='Cancel'
-          firstButtonCallback={() => this.props.cancelAddNewComment(data.id)}
+          firstButtonCallback={() => this.props.cancelAddNewComment()}
           secondButtonText='Create'
-          secondButtonCallback={() => this.props.createComment(data.id, commentBody, commentAuthor, data.parentId)}
-          data={data} />
+          secondButtonCallback={() =>
+            this.props.createComment(comment.id, commentBody, commentAuthor, comment.parentId)} />
 
       </Card>
     )
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    commentCreateState: state.commentCreate
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
-    cancelAddNewComment: commentId => dispatch(cancelAddNewComment(commentId)),
+    cancelAddNewComment: () => dispatch(cancelAddNewComment()),
     createComment: (commentId, commentBody, commentAuthor, postId) => dispatch(createComment(commentId, commentBody, commentAuthor, postId))
   }
 }
 
-export default connect(null, mapDispatchToProps)(CreateComment)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateComment)

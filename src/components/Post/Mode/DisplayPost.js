@@ -13,10 +13,10 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { deletePost, editPost, voteOnPost } from '../../../actions/PostsActions'
 import { categoryLogo } from '../../../utils/AppUtils'
-import Actions from '../../Actions/Actions'
 import AvatarCard from '../../Card/AvatarCard'
 import SubHeaderCard from '../../Card/SubHeaderCard'
-import Voting from '../../Voting/Voting'
+import Actions from '../../Complementary/Actions'
+import Vote from '../../Complementary/Vote'
 
 const style = {
   card: {
@@ -29,6 +29,8 @@ export class DisplayPost extends PureComponent {
 
   static propTypes = {
     data: PropTypes.object.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    isDetails: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -56,12 +58,12 @@ export class DisplayPost extends PureComponent {
 
   render () {
 
-    const {data} = this.props
+    const {data, isLoading, isDetails} = this.props
     const {showVoting, showActions, raised} = this.state
 
     const headerAction = (
       <div>
-        <Link to={`/${data.category}`} style={{margin: '10% 0% 0% 0%'}}>
+        <Link to={`/${data.category}`} style={{margin: '50% 0% 0% 0%'}}>
           {categoryLogo(data.category, 30)}
         </Link>
         <Tooltip title={!showActions ? 'Show actions' : 'Hide actions'} placement='top'>
@@ -76,6 +78,18 @@ export class DisplayPost extends PureComponent {
       <Typography variant='title'>
         {data.title}
       </Typography>
+    )
+
+    const numComments = isDetails ? (
+      <Typography variant="caption" gutterBottom align="right">
+        {`${data.commentCount} comment(s)`}
+      </Typography>
+    ) : (
+      <Link to={`/${data.category}/${data.id}`}>
+        <Typography variant="caption" gutterBottom align="right">
+          {`${data.commentCount} comment(s)`}
+        </Typography>
+      </Link>
     )
 
     return (
@@ -103,30 +117,27 @@ export class DisplayPost extends PureComponent {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Link to={`/${data.category}/${data.id}`}>
-                  <Typography variant="caption" gutterBottom align="right">
-                    {`${data.commentCount} comment(s)`}
-                  </Typography>
-                </Link>
+                {numComments}
               </Grid>
             </Grid>
           </CardContent>
 
-          <Voting
-            sectionType='post'
-            id={data.id}
-            voteCallback={this.props.voteOnPost}
-            show={showVoting} />
+          <Vote
+            type='post'
+            showing={showVoting}
+            upVoteCallBack={() => this.props.voteOnPost(data.id, 'upVote')}
+            downVoteCallback={() => this.props.voteOnPost(data.id, 'downVote')} />
 
         </Card>
 
         <Actions
           showing={showActions}
           isComment={false}
+          isDetails={isDetails}
           category={data.category}
           id={data.id}
           deleteCallback={this.deletePost}
-          editCallback={() => this.props.editPost(data.id)} />
+          editCallback={() => this.props.editPost(data)} />
 
       </div>
     )
@@ -137,7 +148,7 @@ const mapDispatchToProps = dispatch => {
   return {
     voteOnPost: (postId, voteType) => dispatch(voteOnPost(postId, voteType)),
     deletePost: postId => dispatch(deletePost(postId)),
-    editPost: postId => dispatch(editPost(postId))
+    editPost: post => dispatch(editPost(post))
   }
 }
 

@@ -19,7 +19,7 @@ export const fetchCategoryPosts = category => instance.get(`/${category}/posts`)
 
 export const fetchPosts = () => instance.get('/posts')
 
-export const fetchPostDetails = postID => instance.get(`/posts/${postID}`)
+export const fetchPostDetails = postId => instance.get(`/posts/${postId}`)
 
 export const fetchPostComments = postId => instance.get(`/posts/${postId}/comments`)
 
@@ -38,15 +38,15 @@ export const createPost = (id, title, body, author, category) => instance.post('
   category
 })
 
-export const createComment = (commentId, body, author, parentId) => instance.post('/comments', {
-  id: commentId,
+export const createComment = (id, body, author, parentId) => instance.post('/comments', {
+  id,
   timestamp: Date.now(),
   body,
   author,
   parentId
 })
 
-export const voteOnPost = (postID, voteType) => instance.post(`/posts/${postID}`, {option: voteType})
+export const voteOnPost = (postId, voteType) => instance.post(`/posts/${postId}`, {option: voteType})
 
 export const voteOnComment = (commentId, voteType) => instance.post(`/comments/${commentId}`, {option: voteType})
 

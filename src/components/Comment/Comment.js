@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import CreateComment from './Mode/CreateComment'
+import { connect } from 'react-redux'
+import _ from 'underscore'
 import DisplayComment from './Mode/DisplayComment'
 import EditComment from './Mode/EditComment'
-import LoadingComment from './Mode/LoadingComment'
 
 export class Comment extends Component {
 
@@ -14,25 +14,26 @@ export class Comment extends Component {
 
   render () {
 
-    const {data, isLoading} = this.props
+    const {data, isLoading, commentEditState} = this.props
 
     let commentContent = null
 
-    if (isLoading) {
-      commentContent = <LoadingComment data={data} />
-    } else if (data.editMode !== undefined && data.editMode) {
-      commentContent = <EditComment data={data} />
-    } else if (data.createMode !== undefined && data.createMode) {
-      commentContent = <CreateComment data={data} />
+    if (!_.isEmpty(commentEditState.comment) && commentEditState.comment.id === data.id) {
+      commentContent = <EditComment />
     }
     else {
-      commentContent = <DisplayComment data={data} />
+      commentContent = <DisplayComment data={data} isLoading={isLoading} />
     }
 
     return commentContent
 
   }
-
 }
 
-export default Comment
+const mapStateToProps = state => {
+  return {
+    commentEditState: state.commentEdit,
+  }
+}
+
+export default connect(mapStateToProps, null)(Comment)

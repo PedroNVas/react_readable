@@ -20,14 +20,6 @@ const commentSuccessfulAction = (type, comment) => {
   }
 }
 
-const editCommentAction = (type, commentId, editMode) => {
-  return {
-    type,
-    commentId,
-    editMode
-  }
-}
-
 //endregion
 
 //region fetchPostComments
@@ -81,19 +73,37 @@ export const deleteComment = commentId => dispatch => {
 
 //endregion
 
-//region updateComment
+//region fetchCommentDetails
 
-export const EDIT_COMMENT = 'EDIT_COMMENT'
+export const GET_COMMENT_DETAILS_SUCCESS = 'GET_COMMENT_DETAILS_SUCCESS'
+export const GET_COMMENT_DETAILS_FAILED = 'GET_COMMENT_DETAILS_FAILED'
+export const GET_COMMENT_DETAILS = 'GET_COMMENT_DETAILS'
 
-export const editComment = commentId => {
-  return editCommentAction(EDIT_COMMENT, commentId, true)
+export const fetchCommentDetails = commentId => dispatch => {
+
+  dispatch(ActionUtils.loadingAction(GET_COMMENT_DETAILS))
+
+  API.fetchCommentDetails(commentId)
+    .then(response => dispatch(commentSuccessfulAction(GET_COMMENT_DETAILS_SUCCESS, response.data)))
+    .catch(reason => dispatch(ActionUtils.failedAction(GET_COMMENT_DETAILS_FAILED, reason)))
 }
+
+//endregion
+
+//region cancelEditComment
 
 export const CANCEL_EDIT_COMMENT = 'CANCEL_EDIT_COMMENT'
 
-export const cancelEditComment = commentId => {
-  return editCommentAction(CANCEL_EDIT_COMMENT, commentId, false)
+export const cancelEditComment = () => {
+
+  return {
+    type: CANCEL_EDIT_COMMENT
+  }
 }
+
+//endregion
+
+//region updateComment
 
 export const UPDATE_COMMENT_SUCCESS = 'UPDATE_COMMENT_SUCCESS'
 export const UPDATE_COMMENT_FAILED = 'UPDATE_COMMENT_FAILED'
@@ -117,18 +127,18 @@ export const ADD_NEW_COMMENT = 'ADD_NEW_COMMENT'
 export const addNewComment = postId => {
   return {
     type: ADD_NEW_COMMENT,
-    id: uuid(),
-    parentId: postId,
-    createMode: true
+    comment: {
+      id: uuid(),
+      parentId: postId,
+    }
   }
 }
 
 export const CANCEL_ADD_NEW_COMMENT = 'CANCEL_ADD_NEW_COMMENT'
 
-export const cancelAddNewComment = commentId => {
+export const cancelAddNewComment = () => {
   return {
-    type: CANCEL_ADD_NEW_COMMENT,
-    commentId,
+    type: CANCEL_ADD_NEW_COMMENT
   }
 }
 

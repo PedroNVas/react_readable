@@ -4,6 +4,10 @@ import react from '../static/images/react.png'
 import redux from '../static/images/redux.png'
 import udacity from '../static/images/udacity.png'
 
+export function capitalize (string) {
+  return string[0].toUpperCase() + string.slice(1)
+}
+
 export function getDate (timestamp) {
   return new Date(timestamp * 1000).toDateString().slice(0, 10).replace(/-/g, '')
 }
@@ -29,20 +33,20 @@ export function uuid () {
   return uuid
 }
 
-export const categoryLogo = (category, height) => {
+export const categoryLogo = (category, height, logoStyle) => {
   const pixelHeight = `${height}px`
   switch (category) {
     case 'react':
-      return <img src={react} height={pixelHeight} alt='Still React logo' />
+      return <img src={react} height={pixelHeight} alt='Still React logo' style={logoStyle} />
 
     case 'redux':
-      return <img src={redux} height={pixelHeight} alt='Still React logo' />
+      return <img src={redux} height={pixelHeight} alt='Still React logo' style={logoStyle} />
 
     case 'udacity':
-      return <img src={udacity} height={pixelHeight} alt='Still Udacity logo' />
+      return <img src={udacity} height={pixelHeight} alt='Still Udacity logo' style={logoStyle} />
 
     case 'all':
     default:
-      return <SubjectIcon style={{fontSize: (height - 5)}} />
+      return <SubjectIcon style={{...logoStyle, fontSize: (height - 5)}} />
   }
 }

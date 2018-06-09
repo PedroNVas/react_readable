@@ -22,9 +22,11 @@ const style = {
 class Actions extends PureComponent {
 
   static propTypes = {
-    showing: PropTypes.bool.isRequired,
     isComment: PropTypes.bool.isRequired,
-    id: PropTypes.string.isRequired,
+    isDetails: PropTypes.bool.isRequired,
+    showing: PropTypes.bool.isRequired,
+    category: PropTypes.string,
+    id: PropTypes.string,
     deleteCallback: PropTypes.func.isRequired,
     editCallback: PropTypes.func.isRequired
   }
@@ -39,7 +41,7 @@ class Actions extends PureComponent {
 
   render () {
 
-    const {showing, isComment, id, deleteCallback, category} = this.props
+    const {showing, isComment, id, deleteCallback, category, isDetails} = this.props
 
     const {
       isFavoriteHovered, isDeleteHovered, isInfoHovered,
@@ -53,7 +55,7 @@ class Actions extends PureComponent {
           <IconButton onClick={() => this.setState({showDeleteConfirmation: false})}>
             <CancelIcon />
           </IconButton>
-          <IconButton onClick={() => deleteCallback(id)}>
+          <IconButton onClick={() => deleteCallback()}>
             <DeleteIcon />
           </IconButton>
         </div>
@@ -79,11 +81,11 @@ class Actions extends PureComponent {
                 style={{color: isEditHovered ? '#00910d' : '#757575'}}
                 onMouseEnter={() => this.setState({isEditHovered: true})}
                 onMouseLeave={() => this.setState({isEditHovered: false})}
-                onClick={() => this.props.editCallback(id, true)}>
+                onClick={() => this.props.editCallback()}>
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            {!isComment &&
+            {!isComment && !isDetails &&
             <Link to={`/${category}/${id}`}>
               <Tooltip title='Post details' placement='right'>
                 <IconButton

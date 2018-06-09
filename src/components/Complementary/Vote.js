@@ -14,30 +14,30 @@ const style = {
   }
 }
 
-class Voting extends PureComponent {
+class Vote extends PureComponent {
 
   static propTypes = {
-    sectionType: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    voteCallback: PropTypes.func.isRequired,
-    show: PropTypes.bool.isRequired,
+    type: PropTypes.string.isRequired,
+    showing: PropTypes.bool.isRequired,
+    upVoteCallBack: PropTypes.func.isRequired,
+    downVoteCallback: PropTypes.func.isRequired,
   }
 
   render () {
 
-    const {sectionType, id, show, voteCallback} = this.props
+    const {type, showing, upVoteCallBack, downVoteCallback} = this.props
 
-    const upVoteTitle = `Up vote ${sectionType}`
-    const downVoteTitle = `Down vote ${sectionType}`
+    const upVoteTitle = `Up vote ${type}`
+    const downVoteTitle = `Down vote ${type}`
 
     return (
-      <Grow in={show}>
+      <Grow in={showing}>
         <div>
           <Divider inset />
           <Grid container spacing={24} justify='center'>
             <Grid item xs={12} sm={6} style={style.iconButton}>
-              <Tooltip title={upVoteTitle} placement="right" >
-                <IconButton onClick={() => voteCallback(id, 'upVote')} >
+              <Tooltip title={upVoteTitle} placement="right">
+                <IconButton onClick={() => upVoteCallBack()}>
                   <UpVote />
                 </IconButton>
               </Tooltip>
@@ -45,7 +45,7 @@ class Voting extends PureComponent {
 
             <Grid item xs={12} sm={6} style={style.iconButton}>
               <Tooltip title={downVoteTitle} placement="left">
-                <IconButton onClick={() => voteCallback(id, 'downVote')}>
+                <IconButton onClick={() => downVoteCallback()}>
                   <DownVote />
                 </IconButton>
               </Tooltip>
@@ -57,4 +57,4 @@ class Voting extends PureComponent {
   }
 }
 
-export default Voting
+export default Vote

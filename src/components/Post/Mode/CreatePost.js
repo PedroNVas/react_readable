@@ -4,12 +4,11 @@ import CardHeader from '@material-ui/core/es/CardHeader'
 import Grid from '@material-ui/core/es/Grid'
 import TextField from '@material-ui/core/es/TextField'
 import Typography from '@material-ui/core/es/Typography'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { cancelAddNewPost, createPost } from '../../../actions/PostsActions'
 import AvatarCard from '../../Card/AvatarCard'
-import Creating from '../../Creating/Creating'
+import Confirm from '../../Complementary/Confirm'
 
 const style = {
   card: {
@@ -19,10 +18,6 @@ const style = {
 }
 
 export class CreatePost extends PureComponent {
-
-  static propTypes = {
-    data: PropTypes.object.isRequired,
-  }
 
   state = {
     postTitle: null,
@@ -37,8 +32,8 @@ export class CreatePost extends PureComponent {
 
       let postCategory = ''
 
-      if (props.data.category !== undefined) {
-        postCategory = props.data.category
+      if (props.postCreateState.post.category !== undefined) {
+        postCategory = props.postCreateState.post.category
       }
 
       return {
@@ -59,7 +54,7 @@ export class CreatePost extends PureComponent {
 
   render () {
 
-    const {data} = this.props
+    const {post} = this.props.postCreateState
     const {postTitle, postBody, postAuthor, postCategory} = this.state
 
     return (
@@ -120,23 +115,29 @@ export class CreatePost extends PureComponent {
           />
         </CardContent>
 
-        <Creating
+        <Confirm
           firstButtonText='Cancel'
-          firstButtonCallback={() => this.props.cancelAddNewPost(data.id)}
+          firstButtonCallback={() => this.props.cancelAddNewPost()}
           secondButtonText='Create'
-          secondButtonCallback={() => this.props.createPost(data.id, postTitle, postBody, postAuthor, postCategory)}
-          data={data} />
+          secondButtonCallback={() =>
+            this.props.createPost(post.id, postTitle, postBody, postAuthor, postCategory)} />
 
       </Card>
     )
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    postCreateState: state.postCreate
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
-    cancelAddNewPost: postId => dispatch(cancelAddNewPost(postId)),
+    cancelAddNewPost: () => dispatch(cancelAddNewPost()),
     createPost: (postId, postTitle, postBody, postAuthor, postCategory) => dispatch(createPost(postId, postTitle, postBody, postAuthor, postCategory))
   }
 }
 
-export default connect(null, mapDispatchToProps)(CreatePost)
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)

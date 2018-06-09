@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/es/Grid'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 
-class Creating extends PureComponent {
+class Confirm extends PureComponent {
 
   static propTypes = {
     firstButtonText: PropTypes.string.isRequired,
@@ -11,26 +11,21 @@ class Creating extends PureComponent {
 
     secondButtonText: PropTypes.string.isRequired,
     secondButtonCallback: PropTypes.func.isRequired,
-
-    data: PropTypes.object.isRequired
-
   }
 
   render () {
 
     const {firstButtonText, firstButtonCallback, secondButtonText, secondButtonCallback} = this.props
 
-    const {data} = this.props
-
     return (
       <Grid container spacing={24}>
-        <Grid item>
+        <Grid item xs={12} sm={12}>
           <Button variant='raised' color="secondary"
                   onClick={() => firstButtonCallback()}>
             {firstButtonText}
           </Button>
           <Button variant='raised' color="primary"
-            onClick={() => secondButtonCallback()}>
+                  onClick={() => secondButtonCallback()}>
             {secondButtonText}
           </Button>
         </Grid>
@@ -39,4 +34,4 @@ class Creating extends PureComponent {
   }
 }
 
-export default Creating
+export default Confirm

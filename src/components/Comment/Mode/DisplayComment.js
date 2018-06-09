@@ -9,11 +9,11 @@ import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { deleteComment, editComment, voteOnComment } from '../../../actions/CommentsActions'
-import Actions from '../../Actions/Actions'
+import { deleteComment, fetchCommentDetails, voteOnComment } from '../../../actions/CommentsActions'
 import AvatarCard from '../../Card/AvatarCard'
 import SubHeaderCard from '../../Card/SubHeaderCard'
-import Voting from '../../Voting/Voting'
+import Actions from '../../Complementary/Actions'
+import Vote from '../../Complementary/Vote'
 
 const style = {
   card: {
@@ -25,7 +25,8 @@ const style = {
 export class DisplayComment extends Component {
 
   static propTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    isLoading: PropTypes.bool.isRequired
   }
 
   state = {
@@ -46,14 +47,13 @@ export class DisplayComment extends Component {
     this.setState({raised: false, showVoting: false})
   }
 
-  deleteComment = () => {
-    const {id} = this.props.data
-    this.props.deleteComment(id)
+  deleteComment = commentId => {
+    this.props.deleteComment(commentId)
   }
 
   render () {
 
-    const {data} = this.props
+    const {data, isLoading} = this.props
     const {raised, showVoting, showActions} = this.state
 
     const headerAction = (
@@ -70,11 +70,15 @@ export class DisplayComment extends Component {
               onMouseEnter={this.raiseCard}
               onMouseLeave={this.unRaiseCard}
               style={{...style.card, backgroundColor: raised ? '#f7f7f7' : '#FFFFFF'}}>
+
           <CardHeader
-            avatar={<AvatarCard voteScore={data.voteScore} opacity={1} />}
+            avatar={
+              <AvatarCard voteScore={data.voteScore} opacity={1} />
+            }
             action={headerAction}
-            subheader={<SubHeaderCard author={data.author} timestamp={data.timestamp}
-                                      opacity={1} />}
+            subheader={
+              <SubHeaderCard author={data.author} timestamp={data.timestamp} opacity={1} />
+            }
           />
 
           <CardContent>
@@ -83,19 +87,19 @@ export class DisplayComment extends Component {
             </Typography>
           </CardContent>
 
-          <Voting
-            sectionType='comment'
-            id={data.id}
-            show={showVoting}
-            voteCallback={this.props.voteOnComment} />
+          <Vote
+            type='comment'
+            showing={showVoting}
+            upVoteCallBack={() => this.props.voteOnComment(data.id, 'upVote')}
+            downVoteCallback={() => this.props.voteOnComment(data.id, 'downVote')} />
         </Card>
 
         <Actions
           showing={showActions}
           isComment={true}
-          id={data.id}
-          deleteCallback={this.deleteComment}
-          editCallback={() => this.props.editComment(data.id)} />
+          isDetails={false}
+          deleteCallback={() => this.deleteComment(data.id)}
+          editCallback={() => this.props.fetchCommentDetails(data.id)} />
 
       </div>
 
@@ -107,7 +111,7 @@ const mapDispatchToProps = dispatch => {
   return {
     voteOnComment: (commentId, voteType) => dispatch(voteOnComment(commentId, voteType)),
     deleteComment: commentId => dispatch(deleteComment(commentId)),
-    editComment: commentId => dispatch(editComment(commentId))
+    fetchCommentDetails: commentId => dispatch(fetchCommentDetails(commentId))
   }
 }
 

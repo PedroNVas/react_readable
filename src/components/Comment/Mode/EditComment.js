@@ -2,13 +2,12 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import TextField from '@material-ui/core/es/TextField'
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { cancelEditComment, updateComment } from '../../../actions/CommentsActions'
 import AvatarCard from '../../Card/AvatarCard'
 import SubHeaderCard from '../../Card/SubHeaderCard'
-import Creating from '../../Creating/Creating'
+import Confirm from '../../Complementary/Confirm'
 
 const style = {
   card: {
@@ -19,19 +18,15 @@ const style = {
 
 export class EditComment extends Component {
 
-  static propTypes = {
-    data: PropTypes.object.isRequired
-  }
-
   state = {
     commentBody: null
   }
 
   static getDerivedStateFromProps (props, state) {
-    const {data} = props
+    const {comment} = props.commentEditState
     if (state.commentBody === null) {
       return {
-        commentBody: data.body
+        commentBody: comment.body
       }
     }
     return null
@@ -45,16 +40,19 @@ export class EditComment extends Component {
 
   render () {
 
-    const {data} = this.props
+    const {comment} = this.props.commentEditState
     const {commentBody} = this.state
 
     return (
       <Card raised={true}
             style={{...style.card, backgroundColor: '#f1f8fd'}}>
         <CardHeader
-          avatar={<AvatarCard voteScore={data.voteScore} opacity={0.3} />}
-          subheader={<SubHeaderCard author={data.author} timestamp={data.timestamp}
-                                    opacity={0.3} />}
+          avatar={
+            <AvatarCard voteScore={comment.voteScore} opacity={0.3} />
+          }
+          subheader={
+            <SubHeaderCard author={comment.author} timestamp={comment.timestamp} opacity={0.3} />
+          }
         />
 
         <CardContent>
@@ -69,23 +67,28 @@ export class EditComment extends Component {
           />
         </CardContent>
 
-        <Creating
+        <Confirm
           firstButtonText='Cancel'
-          firstButtonCallback={() => this.props.cancelEditComment(data.id)}
+          firstButtonCallback={() => this.props.cancelEditComment()}
           secondButtonText='Edit'
-          secondButtonCallback={() => this.props.updateComment(data.id, commentBody)}
-          data={data} />
-        
+          secondButtonCallback={() => this.props.updateComment(comment.id, commentBody)} />
+
       </Card>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
   return {
-    cancelEditComment: postId => dispatch(cancelEditComment(postId)),
-    updateComment: (postId, commentBody) => dispatch(updateComment(postId, commentBody))
+    commentEditState: state.commentEdit
   }
 }
 
-export default connect(null, mapDispatchToProps)(EditComment)
+const mapDispatchToProps = dispatch => {
+  return {
+    cancelEditComment: () => dispatch(cancelEditComment()),
+    updateComment: (commentId, commentBody) => dispatch(updateComment(commentId, commentBody))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditComment)

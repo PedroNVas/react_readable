@@ -1,35 +1,38 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import CreatePost from './Mode/CreatePost'
+import { connect } from 'react-redux'
+import _ from 'underscore'
 import DisplayPost from './Mode/DisplayPost'
 import EditPost from './Mode/EditPost'
-import LoadingPost from './Mode/LoadingPost'
 
 class Post extends PureComponent {
 
   static propTypes = {
     data: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    isLoading: PropTypes.bool.isRequired,
+    isDetails: PropTypes.bool.isRequired,
   }
 
   render () {
 
-    const {data, isLoading} = this.props
+    const {data, isLoading, isDetails, postEditState} = this.props
 
     let postContent = null
 
-    if (isLoading) {
-      postContent = <LoadingPost data={data} />
-    } else if (data.createMode !== undefined && data.createMode) {
-      postContent = <CreatePost data={data} />
-    } else if (data.editMode !== undefined && data.editMode) {
-      postContent = <EditPost data={data} />
+    if (!_.isEmpty(postEditState.post) && postEditState.post.id === data.id) {
+      postContent = <EditPost />
     } else {
-      postContent = <DisplayPost data={data} />
+      postContent = <DisplayPost data={data} isLoading={isLoading} isDetails={isDetails}/>
     }
 
     return postContent
   }
 }
 
-export default Post
+const mapStateToProps = state => {
+  return {
+    postEditState: state.postEdit
+  }
+}
+
+export default connect(mapStateToProps, null)(Post)

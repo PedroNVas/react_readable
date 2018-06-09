@@ -3,14 +3,13 @@ import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { cancelEditPost, updatePost } from '../../../actions/PostsActions'
 import AvatarCard from '../../Card/AvatarCard'
 import HeaderCard from '../../Card/HeaderCard'
 import SubHeaderCard from '../../Card/SubHeaderCard'
-import Creating from '../../Creating/Creating'
+import Confirm from '../../Complementary/Confirm'
 
 const style = {
   card: {
@@ -21,21 +20,17 @@ const style = {
 
 export class EditPost extends PureComponent {
 
-  static propTypes = {
-    data: PropTypes.object.isRequired,
-  }
-
   state = {
     postTitle: null,
     postBody: null
   }
 
   static getDerivedStateFromProps (props, state) {
-    const {data} = props
+    const {post} = props.postEditState
     if (state.postBody === null || state.postTitle === null) {
       return {
-        postTitle: data.title,
-        postBody: data.body
+        postTitle: post.title,
+        postBody: post.body
       }
     }
     return null
@@ -49,7 +44,7 @@ export class EditPost extends PureComponent {
 
   render () {
 
-    const {data} = this.props
+    const {post} = this.props.postEditState
 
     const {postBody, postTitle} = this.state
 
@@ -70,9 +65,9 @@ export class EditPost extends PureComponent {
             onMouseLeave={this.unRaiseCard}
             style={{...style.card, backgroundColor: '#f1f8fd'}}>
         <HeaderCard
-          avatar={<AvatarCard opacity={0.3} voteScore={data.voteScore} />}
+          avatar={<AvatarCard opacity={0.3} voteScore={post.voteScore} />}
           title={headerTitle}
-          subHeader={<SubHeaderCard author={data.author} timestamp={data.timestamp}
+          subHeader={<SubHeaderCard author={post.author} timestamp={post.timestamp}
                                     opacity={0.3} />} />
 
         <CardContent>
@@ -90,29 +85,34 @@ export class EditPost extends PureComponent {
             </Grid>
             <Grid item xs={12} sm={12} style={{opacity: 0.3}}>
               <Typography variant="caption" gutterBottom align="right">
-                {`${data.commentCount} comment(s)`}
+                {`${post.commentCount} comment(s)`}
               </Typography>
             </Grid>
           </Grid>
         </CardContent>
 
-        <Creating
+        <Confirm
           firstButtonText='Cancel'
-          firstButtonCallback={() => this.props.cancelEditPost(data.id)}
+          firstButtonCallback={() => this.props.cancelEditPost()}
           secondButtonText='Edit'
-          secondButtonCallback={() => this.props.updatePost(data.id, postTitle, postBody)}
-          data={data} />
+          secondButtonCallback={() => this.props.updatePost(post.id, postTitle, postBody)} />
 
       </Card>
     )
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    postEditState: state.postEdit
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
-    cancelEditPost: postId => dispatch(cancelEditPost(postId)),
+    cancelEditPost: () => dispatch(cancelEditPost()),
     updatePost: (postId, postTitle, postBody) => dispatch(updatePost(postId, postTitle, postBody))
   }
 }
 
-export default connect(null, mapDispatchToProps)(EditPost)
+export default connect(mapStateToProps, mapDispatchToProps)(EditPost)

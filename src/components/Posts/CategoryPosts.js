@@ -2,7 +2,9 @@ import Button from '@material-ui/core/es/Button'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import _ from 'underscore'
 import { addNewCategoryPost, fetchCategoryPosts } from '../../actions/PostsActions'
+import CreatePost from '../Post/Mode/CreatePost'
 import Post from '../Post/Post'
 
 export class CategoryPosts extends Component {
@@ -40,19 +42,24 @@ export class CategoryPosts extends Component {
   render () {
 
     const {category} = this.props.match.params
-    const {postsState} = this.props
-    const {posts, success, loading, failed} = postsState
+    const {categoryPostsState, postCreateState} = this.props
+    const {posts, success, loading, failed} = categoryPostsState
+
+    const newPost = !_.isEmpty(postCreateState.post) ? <CreatePost /> : null
 
     return (
       <div>
         {posts
-          .filter(post => post.deleted !== true && post.category === category)
+          .filter(post => post.deleted !== true)
           .map(post =>
-            <Post key={post.id} data={post} isLoading={loading} />
+            <Post key={post.id} data={post} isLoading={loading} isDetails={false} />
           )}
+        {newPost}
+        {newPost === null &&
         <Button onClick={() => this.props.addNewCategoryPost(category)}>
           {`Create ${category} post`}
         </Button>
+        }
       </div>
     )
   }
@@ -61,7 +68,8 @@ export class CategoryPosts extends Component {
 
 const mapStateToProps = state => {
   return {
-    postsState: state.posts,
+    categoryPostsState: state.categoryPosts,
+    postCreateState: state.postCreate
   }
 }
 

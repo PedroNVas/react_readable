@@ -19,7 +19,7 @@ const style = {
   }
 }
 
-export class Sorting extends PureComponent {
+export class Sort extends PureComponent {
 
   static propTypes = {
     opened: PropTypes.bool.isRequired
@@ -115,4 +115,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Sorting)
+export default connect(null, mapDispatchToProps)(Sort)
