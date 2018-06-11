@@ -1,80 +1,80 @@
-import Collapse from '@material-ui/core/Collapse'
-import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import IconButton from '@material-ui/core/IconButton'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import Tooltip from '@material-ui/core/Tooltip'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { FaSortAmountAsc, FaSortAmountDesc } from 'react-icons/lib/fa'
-import { connect } from 'react-redux'
-import { sortPosts } from '../../actions/PostsActions'
+import Collapse from "@material-ui/core/Collapse";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import IconButton from "@material-ui/core/IconButton";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import Tooltip from "@material-ui/core/Tooltip";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
+import { FaSortAmountAsc, FaSortAmountDesc } from "react-icons/lib/fa";
+import { connect } from "react-redux";
+import { sortPosts } from "../../actions/PostsActions";
 
 const style = {
   sorting: {
-    textAlign: 'center',
-    margin: '0% 0% 0% 0%'
+    textAlign: "center",
+    margin: "0% 0% 0% 0%"
   }
-}
+};
 
 export class Sort extends PureComponent {
 
   static propTypes = {
     opened: PropTypes.bool.isRequired
-  }
+  };
 
   state = {
-    sortBy: 'voteScore',
-    orderBy: 'desc'
-  }
+    sortBy: "voteScore",
+    orderBy: "desc"
+  };
 
   orderByIconChange = () => {
-    const {sortBy, orderBy} = this.state
+    const { sortBy, orderBy } = this.state;
 
-    let oppositeOrder
+    let oppositeOrder;
 
     switch (orderBy) {
-      case 'desc':
-        oppositeOrder = 'asc'
-        this.setState({orderBy: oppositeOrder})
-        break
+      case "desc":
+        oppositeOrder = "asc";
+        this.setState({ orderBy: oppositeOrder });
+        break;
 
-      case 'asc':
-        oppositeOrder = 'desc'
-        this.setState({orderBy: 'desc'})
-        break
+      case "asc":
+        oppositeOrder = "desc";
+        this.setState({ orderBy: "desc" });
+        break;
     }
 
-    this.props.sortPosts(sortBy, oppositeOrder)
-  }
+    this.props.sortPosts(sortBy, oppositeOrder);
+  };
 
   sortByFormChange = event => {
-    this.setState({[event.target.name]: event.target.value})
+    this.setState({ [event.target.name]: event.target.value });
 
-    this.props.sortPosts(event.target.value, this.state.orderBy)
-  }
+    this.props.sortPosts(event.target.value, this.state.orderBy);
+  };
 
   orderByIcon = () => {
-    const {orderBy} = this.state
+    const { orderBy } = this.state;
 
     switch (orderBy) {
-      case 'asc':
-        return <FaSortAmountAsc />
+      case "asc":
+        return <FaSortAmountAsc />;
 
-      case 'desc':
+      case "desc":
       default:
-        return <FaSortAmountDesc />
+        return <FaSortAmountDesc />;
     }
-  }
+  };
 
   render () {
 
-    const {opened} = this.props
-    const {sortBy, orderBy} = this.state
+    const { opened } = this.props;
+    const { sortBy, orderBy } = this.state;
 
-    const tooltipValue = orderBy === 'asc' ? 'Ascending order' : 'Descending order'
+    const tooltipValue = orderBy === "asc" ? "Ascending order" : "Descending order";
 
     return (
       <div style={style.sorting}>
@@ -84,8 +84,8 @@ export class Sort extends PureComponent {
             value={sortBy}
             onChange={this.sortByFormChange}
             inputProps={{
-              name: 'sortBy',
-              id: 'sort-by',
+              name: "sortBy",
+              id: "sort-by"
             }}
           >
             <MenuItem value="voteScore">
@@ -105,14 +105,14 @@ export class Sort extends PureComponent {
           </IconButton>
         </Tooltip>
       </div>
-    )
+    );
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    sortPosts: (sortBy, orderBy) => dispatch(sortPosts({sortBy, orderBy}))
-  }
-}
+    sortPosts: (sortBy, orderBy) => dispatch(sortPosts({ sortBy, orderBy }))
+  };
+};
 
-export default connect(null, mapDispatchToProps)(Sort)
+export default connect(null, mapDispatchToProps)(Sort);

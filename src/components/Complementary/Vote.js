@@ -1,18 +1,18 @@
-import Divider from '@material-ui/core/Divider'
-import Grid from '@material-ui/core/Grid'
-import Grow from '@material-ui/core/Grow'
-import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
-import DownVote from '@material-ui/icons/ThumbDown'
-import UpVote from '@material-ui/icons/ThumbUp'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
+import Grow from "@material-ui/core/Grow";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import DownVote from "@material-ui/icons/ThumbDown";
+import UpVote from "@material-ui/icons/ThumbUp";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
 
 const style = {
   iconButton: {
-    textAlign: 'center',
+    textAlign: "center"
   }
-}
+};
 
 class Vote extends PureComponent {
 
@@ -20,15 +20,15 @@ class Vote extends PureComponent {
     type: PropTypes.string.isRequired,
     showing: PropTypes.bool.isRequired,
     upVoteCallBack: PropTypes.func.isRequired,
-    downVoteCallback: PropTypes.func.isRequired,
-  }
+    downVoteCallback: PropTypes.func.isRequired
+  };
 
   render () {
 
-    const {type, showing, upVoteCallBack, downVoteCallback} = this.props
+    const { type, showing, upVoteCallBack, downVoteCallback } = this.props;
 
-    const upVoteTitle = `Up vote ${type}`
-    const downVoteTitle = `Down vote ${type}`
+    const upVoteTitle = `Up vote ${type}`;
+    const downVoteTitle = `Down vote ${type}`;
 
     return (
       <Grow in={showing}>
@@ -53,8 +53,8 @@ class Vote extends PureComponent {
           </Grid>
         </div>
       </Grow>
-    )
+    );
   }
 }
 
-export default Vote
+export default Vote;

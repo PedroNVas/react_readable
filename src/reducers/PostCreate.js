@@ -1,67 +1,66 @@
-import * as PostsActions from '../actions/PostsActions'
+import * as PostsActions from "../actions/PostsActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialPostCreateState = {
   post: {},
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const postCreate = (state = initialPostCreateState, action) => {
 
-  const {post, loading, success, failed, failReason} = action
+  const { post } = action;
 
   switch (action.type) {
 
-    //region loading actions
-
-    case PostsActions.CREATE_POST:
-      return {
-        ...state,
-        success,
-        loading,
-        failed
-      }
+    //region pending actions
 
     case PostsActions.ADD_NEW_POST:
       return {
         ...state,
         post
-      }
+      };
 
-    //endregion
-
-    //region failed actions
-
-    case PostsActions.CREATE_POST_FAILED:
+    case PostsActions.CREATE_POST_PENDING:
       return {
         ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+        ...StoreUtils.loadingState()
+      };
+
 
     //endregion
 
-    //region success actions
+    //region fulfilled actions
 
-    //endregion
-
-    case PostsActions.CREATE_POST_SUCCESS:
-    case PostsActions.CANCEL_ADD_NEW_POST:
+    case PostsActions.CREATE_POST_FULFILLED:
       return {
         ...state,
         post: {},
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.successState()
+      };
+
+    case PostsActions.CANCEL_ADD_NEW_POST:
+      return {
+        ...state,
+        post: {}
+      };
+
+    //endregion
+
+    //region rejected actions
+
+    case PostsActions.CREATE_POST_REJECTED:
+      return {
+        ...state,
+        ...StoreUtils.failedState()
+      };
+
+    //endregion
 
     default:
-      return initialPostCreateState
+      return initialPostCreateState;
   }
-}
+};
 
-export default postCreate
+export default postCreate;

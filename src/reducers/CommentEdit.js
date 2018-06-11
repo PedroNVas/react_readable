@@ -1,73 +1,75 @@
-import * as CommentsActions from '../actions/CommentsActions'
+import * as CommentsActions from "../actions/CommentsActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialCommentEditState = {
   comment: {},
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const commentEdit = (state = initialCommentEditState, action) => {
 
-  const {comment, loading, success, failed, failReason} = action
+  const { payload } = action;
 
   switch (action.type) {
 
-    //region loading actions
+    //region pending actions
 
-    case CommentsActions.UPDATE_COMMENT:
-    case CommentsActions.GET_COMMENT_DETAILS:
-      return {
-        ...state,
-        success,
-        loading,
-        failed
-      }
-
-    //endregion
-
-    //region failed actions
-
-    case CommentsActions.UPDATE_COMMENT_FAILED:
-    case CommentsActions.GET_COMMENT_DETAILS_FAILED:
-      return {
-        ...state,
-        loading,
-        success,
-        failed,
-        failReason
-      }
-
-    //endregion
-
-    //region success actions
-
-    case CommentsActions.GET_COMMENT_DETAILS_SUCCESS:
-      return {
-        ...state,
-        comment,
-        loading,
-        success,
-        failed,
-      }
-
-    case CommentsActions.UPDATE_COMMENT_SUCCESS:
-    case CommentsActions.CANCEL_EDIT_COMMENT:
+    case CommentsActions.FETCH_COMMENT_DETAILS_PENDING:
       return {
         ...state,
         comment: {},
-        loading,
-        success,
-        failed,
-      }
+        ...StoreUtils.loadingState()
+      };
+
+    case CommentsActions.UPDATE_COMMENT_PENDING:
+      return {
+        ...state,
+        ...StoreUtils.loadingState()
+      };
+
+    //endregion
+
+    //region fulfilled actions
+
+    case CommentsActions.FETCH_COMMENT_DETAILS_FULFILLED:
+      return {
+        ...state,
+        comment: payload.data,
+        ...StoreUtils.successState()
+      };
+
+    case CommentsActions.CANCEL_EDIT_COMMENT:
+      return {
+        ...state,
+        comment: {}
+      };
+
+    case CommentsActions.UPDATE_COMMENT_FULFILLED:
+      return {
+        ...state,
+        comment: {},
+        ...StoreUtils.successState()
+      };
+
+    //endregion
+
+    //region rejected actions
+
+    case CommentsActions.UPDATE_COMMENT_REJECTED:
+    case CommentsActions.FETCH_COMMENT_DETAILS_REJECTED:
+      return {
+        ...state,
+        ...StoreUtils.failedState()
+      };
 
     //endregion
 
     default:
-      return initialCommentEditState
+      return initialCommentEditState;
   }
 
-}
+};
 
-export default commentEdit
+export default commentEdit;

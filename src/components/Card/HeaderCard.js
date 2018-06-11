@@ -1,6 +1,6 @@
-import CardHeader from '@material-ui/core/CardHeader'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import CardHeader from "@material-ui/core/CardHeader";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
 
 class HeaderCard extends PureComponent {
 
@@ -8,11 +8,11 @@ class HeaderCard extends PureComponent {
     avatar: PropTypes.object.isRequired,
     title: PropTypes.object.isRequired,
     subHeader: PropTypes.object.isRequired
-  }
+  };
 
   render () {
 
-    const {avatar, action, title, subHeader} = this.props
+    const { avatar, action, title, subHeader } = this.props;
 
     return (
       <CardHeader
@@ -21,8 +21,8 @@ class HeaderCard extends PureComponent {
         title={title}
         subheader={subHeader}
       />
-    )
+    );
   }
 }
 
-export default HeaderCard
+export default HeaderCard;

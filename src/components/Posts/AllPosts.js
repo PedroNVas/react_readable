@@ -1,44 +1,30 @@
-import Button from '@material-ui/core/es/Button'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import _ from 'underscore'
-import { addNewPost, fetchPosts } from '../../actions/PostsActions'
-import CreatePost from '../Post/Mode/CreatePost'
-import Post from '../Post/Post'
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { addNewPost, fetchPosts } from "../../actions/PostsActions";
+import Posts from "./Posts";
 
 export class AllPosts extends Component {
 
   static propTypes = {
-    fetchPosts: PropTypes.func.isRequired,
-  }
+    fetchPosts: PropTypes.func.isRequired
+  };
 
   componentDidMount () {
-    this.props.fetchPosts()
+    this.props.fetchPosts();
   }
 
   render () {
 
-    const {postsState, postCreateState} = this.props
-    const {posts, success, loading, failed} = postsState
-
-    const newPost = !_.isEmpty(postCreateState.post) ? <CreatePost /> : null
+    const { postsState, postCreateState } = this.props;
 
     return (
-      <div>
-        {posts
-          .filter(post => post.deleted !== true)
-          .map(post =>
-            <Post key={post.id} data={post} isLoading={loading} isDetails={false}/>
-          )}
-        {newPost}
-        {newPost === null &&
-        <Button onClick={() => this.props.addNewPost()}>
-          Create post
-        </Button>
-        }
-      </div>
-    )
+      <Posts
+        posts={postsState.posts}
+        postsState={postsState}
+        postCreateState={postCreateState}
+        addPost={() => this.props.addNewPost()} />
+    );
   }
 }
 
@@ -46,14 +32,14 @@ const mapStateToProps = state => {
   return {
     postsState: state.posts,
     postCreateState: state.postCreate
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchPosts: () => dispatch(fetchPosts()),
     addNewPost: () => dispatch(addNewPost())
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllPosts)
+export default connect(mapStateToProps, mapDispatchToProps)(AllPosts);

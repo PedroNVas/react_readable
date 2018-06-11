@@ -1,30 +1,42 @@
-import Avatar from '@material-ui/core/Avatar'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import Avatar from "@material-ui/core/Avatar";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
 
 class AvatarCard extends PureComponent {
 
   static propTypes = {
     voteScore: PropTypes.number.isRequired,
-    opacity: PropTypes.number.isRequired,
-  }
+    opacity: PropTypes.number.isRequired
+  };
+
+  chooseBackgroundColor = voteScore => {
+    if (voteScore > 0) {
+      return "#dcffd1";
+    } else if (voteScore < 0) {
+      return "#ffdbd2";
+    } else {
+      return "#e2e2e2";
+    }
+  };
 
   render () {
 
-    const {voteScore, opacity} = this.props
+    const { voteScore, opacity } = this.props;
+
+    const backgroundColor = this.chooseBackgroundColor(voteScore);
 
     return (
       <Avatar style={
         {
-          backgroundColor: voteScore > 0 ? '#dcffd1' : '#ffdbd2',
-          color: voteScore > 0 ? '#1c8000' : '#830800',
-          opacity,
+          backgroundColor,
+          color: voteScore > 0 ? "#1c8000" : "#830800",
+          opacity
         }
       }>
         {voteScore}
       </Avatar>
-    )
+    );
   }
 }
 
-export default AvatarCard
+export default AvatarCard;

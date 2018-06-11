@@ -1,61 +1,55 @@
-import * as CategoriesActions from '../actions/CategoriesActions'
+import * as CategoriesActions from "../actions/CategoriesActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialCategoriesState = {
   categories: [],
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const categories = (state = initialCategoriesState, action) => {
 
-  const {categories, loading, success, failed, failReason} = action
+  const { payload } = action;
 
   switch (action.type) {
 
-    //region loading actions
+    //region pending actions
 
-    case CategoriesActions.GET_CATEGORIES:
+    case CategoriesActions.FETCH_CATEGORIES_PENDING:
       return {
         ...state,
-        success,
-        loading,
-        failed
-      }
+        categories: [],
+        ...StoreUtils.loadingState()
+      };
 
     //endregion
 
-    //region failed actions
+    //region fulfilled actions
 
-    case CategoriesActions.GET_CATEGORIES_FAILED:
+    case CategoriesActions.FETCH_CATEGORIES_FULFILLED:
       return {
         ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+        categories: payload.data.categories,
+        ...StoreUtils.successState()
+      };
 
     //endregion
 
-    //region success actions
+    //region rejected actions
 
-    case CategoriesActions.GET_CATEGORIES_SUCCESS:
+    case CategoriesActions.FETCH_CATEGORIES_REJECTED:
       return {
         ...state,
-        categories,
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.failedState()
+      };
 
     //endregion
 
     default:
-      return state
+      return state;
 
   }
-}
+};
 
-export default categories
+export default categories;

@@ -1,31 +1,16 @@
-import * as API from '../api/API'
-import * as ActionUtils from '../utils/ActionUtils'
+import * as API from "../api/API";
 
-//region categories action creator helper
-
-const categoriesSuccessfulAction = (type, categories) => {
-  return {
-    type,
-    categories,
-    ...ActionUtils.successState()
-  }
-}
-
-//endregion
+import payloadAction from "../utils/ActionsUtils";
 
 //region fetchCategories
 
-export const GET_CATEGORIES_SUCCESS = 'GET_CATEGORIES_SUCCESS'
-export const GET_CATEGORIES_FAILED = 'GET_CATEGORIES_FAILED'
-export const GET_CATEGORIES = 'GET_CATEGORIES'
+const FETCH_CATEGORIES = "FETCH_CATEGORIES";
+export const FETCH_CATEGORIES_PENDING = "FETCH_CATEGORIES_PENDING";
+export const FETCH_CATEGORIES_FULFILLED = "FETCH_CATEGORIES_FULFILLED";
+export const FETCH_CATEGORIES_REJECTED = "FETCH_CATEGORIES_REJECTED";
 
-export const fetchCategories = () => dispatch => {
-
-  dispatch(ActionUtils.loadingAction(GET_CATEGORIES))
-
-  API.fetchCategories()
-    .then(response => dispatch(categoriesSuccessfulAction(GET_CATEGORIES_SUCCESS, response.data.categories)))
-    .catch(reason => dispatch(ActionUtils.failedAction(GET_CATEGORIES_FAILED, reason)))
-}
+export const fetchCategories = () => {
+  return payloadAction(FETCH_CATEGORIES, API.fetchCategories);
+};
 
 //endregion

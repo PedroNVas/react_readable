@@ -5,24 +5,24 @@ export const loadingState = () => {
     success: false,
     loading: true,
     failed: false
-  }
-}
+  };
+};
 
 export const successState = () => {
   return {
     success: true,
     loading: false,
     failed: false
-  }
-}
+  };
+};
 
 export const failedState = () => {
   return {
     success: false,
     loading: false,
     failed: true
-  }
-}
+  };
+};
 
 //endregion
 
@@ -32,15 +32,15 @@ export const loadingAction = (type) => {
   return {
     type,
     ...loadingState()
-  }
-}
+  };
+};
 
 export const failedAction = (type, failedReason) => {
   return {
     type,
     failedReason,
     ...failedState()
-  }
-}
+  };
+};
 
 //endregion

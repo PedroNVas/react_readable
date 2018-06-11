@@ -1,67 +1,66 @@
-import * as PostsActions from '../actions/PostsActions'
+import * as PostsActions from "../actions/PostsActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialPostDetailsState = {
   post: {},
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const postDetails = (state = initialPostDetailsState, action) => {
 
-  const {post, loading, success, failed, failReason} = action
+  const { payload } = action;
 
   switch (action.type) {
 
-    // region loading actions
+    //region pending actions
 
-    case PostsActions.GET_POST_DETAILS:
-    case PostsActions.DELETE_POST:
-    case PostsActions.VOTE_ON_POST:
+    case PostsActions.FETCH_POST_DETAILS_PENDING:
       return {
         ...state,
-        success,
-        loading,
-        failed
-      }
+        post: {},
+        ...StoreUtils.loadingState()
+      };
+
+    case PostsActions.DELETE_POST_PENDING:
+    case PostsActions.VOTE_ON_POST_PENDING:
+      return {
+        ...state,
+        ...StoreUtils.loadingState()
+      };
 
     //endregion
 
-    //region failed actions
+    //region fulfilled actions
 
-    case PostsActions.GET_POST_DETAILS_FAILED:
-    case PostsActions.DELETE_POST_FAILED:
-    case PostsActions.VOTE_ON_POST_FAILED:
+    case PostsActions.UPDATE_POST_FULFILLED:
+    case PostsActions.DELETE_POST_FULFILLED:
+    case PostsActions.VOTE_ON_POST_FULFILLED:
+    case PostsActions.FETCH_POST_DETAILS_FULFILLED:
       return {
         ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+        post: payload.data,
+        ...StoreUtils.successState()
+      };
 
     //endregion
 
-    //region success actions
+    //region rejected actions
 
-    case PostsActions.GET_POST_DETAILS_SUCCESS:
-    case PostsActions.DELETE_POST_SUCCESS:
-    case PostsActions.VOTE_ON_POST_SUCCESS:
-    case PostsActions.UPDATE_POST_SUCCESS:
+    case PostsActions.DELETE_POST_REJECTED:
+    case PostsActions.VOTE_ON_POST_REJECTED:
+    case PostsActions.FETCH_POST_DETAILS_REJECTED:
       return {
         ...state,
-        post,
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.failedState()
+      };
 
     //endregion
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default postDetails
+export default postDetails;

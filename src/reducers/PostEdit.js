@@ -1,68 +1,66 @@
-import * as PostActions from '../actions/PostsActions'
+import * as PostsActions from "../actions/PostsActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialPostEditState = {
   post: {},
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const postEdit = (state = initialPostEditState, action) => {
 
-  const {post, loading, success, failed, failReason} = action
+  const { post } = action;
 
   switch (action.type) {
 
-    case PostActions.EDIT_POST:
+    //region pending actions
+
+    case PostsActions.EDIT_POST:
       return {
         ...state,
         post
-      }
+      };
 
-    //region loading actions
-
-    case PostActions.UPDATE_POST:
+    case PostsActions.UPDATE_POST_PENDING:
       return {
         ...state,
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.loadingState()
+      };
 
     //endregion
 
-    //region failed actions
+    //region fulfilled actions
 
-    case PostActions.UPDATE_POST_FAILED:
-      return {
-        ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
-
-    //endregion
-
-    //region success actions
-
-    case PostActions.CANCEL_EDIT_POST:
-    case PostActions.UPDATE_POST_SUCCESS:
+    case PostsActions.UPDATE_POST_FULFILLED:
       return {
         ...state,
         post: {},
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.successState()
+      };
+
+    case PostsActions.CANCEL_EDIT_POST:
+      return {
+        ...state,
+        post: {}
+      };
+
+    //endregion
+
+    //region rejected actions
+
+    case PostsActions.UPDATE_POST_REJECTED:
+      return {
+        ...state,
+        ...StoreUtils.failedState()
+      };
 
     //endregion
 
     default:
-      return initialPostEditState
+      return initialPostEditState;
   }
 
-}
+};
 
-export default postEdit
+export default postEdit;

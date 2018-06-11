@@ -1,68 +1,66 @@
-import * as CommentsActions from '../actions/CommentsActions'
+import * as CommentsActions from "../actions/CommentsActions";
+import * as StoreUtils from "../utils/StoreUtils";
 
 const initialCommentCreateState = {
   comment: {},
   success: false,
   loading: false,
-  failed: false,
-  failReason: ''
-}
+  failed: false
+};
 
 const commentCreate = (state = initialCommentCreateState, action) => {
 
-  const {comment, loading, success, failed, failReason} = action
+  const { comment } = action;
 
   switch (action.type) {
 
-    //region loading actions
+    //region pending actions
 
-    case CommentsActions.CREATE_COMMENT:
+    case CommentsActions.CREATE_COMMENT_PENDING:
       return {
         ...state,
-        success,
-        loading,
-        failed
-      }
+        ...StoreUtils.loadingState()
+
+      };
+
+    //endregion
+
+    //region fulfilled actions
 
     case CommentsActions.ADD_NEW_COMMENT:
       return {
         ...state,
         comment
-      }
+      };
 
-    //endregion
-
-    //region failed actions
-
-    case CommentsActions.CREATE_COMMENT_FAILED:
+    case CommentsActions.CANCEL_ADD_NEW_COMMENT:
       return {
         ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      }
+        comment: {}
+      };
 
-    //endregion
-
-    //region success actions
-
-    case CommentsActions.CREATE_COMMENT_SUCCESS:
-    case CommentsActions.CANCEL_ADD_NEW_COMMENT: {
+    case CommentsActions.CREATE_COMMENT_FULFILLED:
       return {
         ...state,
         comment: {},
-        success,
-        loading,
-        failed
-      }
-    }
+        ...StoreUtils.successState()
+      };
+
+    //endregion
+
+    //region rejected actions
+
+    case CommentsActions.CREATE_COMMENT_REJECTED:
+      return {
+        ...state,
+        ...StoreUtils.failedState()
+      };
 
     //endregion
 
     default:
-      return initialCommentCreateState
+      return initialCommentCreateState;
   }
-}
+};
 
-export default commentCreate
+export default commentCreate;
