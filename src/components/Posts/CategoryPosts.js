@@ -39,13 +39,12 @@ export class CategoryPosts extends Component {
   render () {
 
     const { category } = this.props.match.params;
-    const { categoryPostsState, postCreateState } = this.props;
+    const { categoryPostsState, postCreate } = this.props;
 
     return (
       <Posts
-        posts={categoryPostsState.posts}
         postsState={categoryPostsState}
-        postCreateState={postCreateState}
+        postCreate={postCreate}
         addPost={() => this.props.addNewCategoryPost(category)}
         category={category} />
     );
@@ -56,7 +55,7 @@ export class CategoryPosts extends Component {
 const mapStateToProps = state => {
   return {
     categoryPostsState: state.categoryPosts,
-    postCreateState: state.postCreate
+    postCreate: state.postCreate.post
   };
 };
 

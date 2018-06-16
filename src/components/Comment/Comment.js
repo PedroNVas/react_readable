@@ -8,21 +8,20 @@ import EditComment from "./Mode/EditComment";
 export class Comment extends Component {
 
   static propTypes = {
-    data: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    data: PropTypes.object.isRequired
   };
 
   render () {
 
-    const { data, isLoading, commentEditState } = this.props;
+    const { data, commentEdit } = this.props;
 
     let commentContent = null;
 
-    if (!_.isEmpty(commentEditState.comment) && commentEditState.comment.id === data.id) {
+    if (!_.isEmpty(commentEdit) && commentEdit.id === data.id) {
       commentContent = <EditComment />;
     }
     else {
-      commentContent = <DisplayComment data={data} isLoading={isLoading} />;
+      commentContent = <DisplayComment data={data} />;
     }
 
     return commentContent;
@@ -32,7 +31,7 @@ export class Comment extends Component {
 
 const mapStateToProps = state => {
   return {
-    commentEditState: state.commentEdit
+    commentEdit: state.commentEdit.comment
   };
 };
 

@@ -14,15 +14,14 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // need to pass the reducer
 const store = createStore(
   reducer,
-  composeEnhancers(
-    applyMiddleware(thunk, promiseMiddleware())
-  )
+  composeEnhancers(applyMiddleware(thunk, promiseMiddleware()))
 );
 
 ReactDOM.render(
   <Provider store={store}>
     <AppRoutes />
   </Provider>,
-  document.getElementById("root"));
+  document.getElementById("root")
+);
 
 registerServiceWorker();

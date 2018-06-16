@@ -11,6 +11,7 @@ import _ from "underscore";
 import { addNewComment, fetchPostComments } from "../../actions/CommentsActions";
 import { fetchPostDetails } from "../../actions/PostsActions";
 import { randomCommentsMessages } from "../../utils/AppUtils";
+import LoadingCard from "../Card/LoadingCard";
 import Comment from "../Comment/Comment";
 import CreateComment from "../Comment/Mode/CreateComment";
 import Post from "../Post/Post";
@@ -30,6 +31,11 @@ const style = {
   message: {
     fontFamily: "'Raleway', regular",
     fontSize: "25px"
+  },
+  fontStyle: {
+    textAlign: "center",
+    fontFamily: "'Raleway', regular",
+    fontSize: "15px"
   }
 };
 
@@ -58,19 +64,89 @@ export class PostDetails extends Component {
     this.props.fetchPostDetails(postId);
   }
 
+  handlePostState = post => {
+    if (post.failed) {
+      return (
+        <div style={{ display: "block" }} key={post.id}>
+          <Post
+            key={post.id}
+            data={post}
+            isDetails={true} />
+
+          <div>
+            <Typography variant='headline' style={style.fontStyle}>
+              Something went wrong... refresh the page
+            </Typography>
+          </div>
+        </div>
+      );
+    } else if (post.loading) {
+      return (
+        <LoadingCard
+          key={post.id}
+          content='Loading post...'
+          backgroundColor="#FFFFFF"
+          cardStyle={style.card} />
+      );
+    } else {
+      return (
+        <Post
+          key={post.id}
+          data={post}
+          isDetails={true} />
+      );
+    }
+  };
+
+  handleCommentState = comment => {
+    if (comment.failed) {
+      return (
+        <div style={{ display: "block" }} key={comment.id}>
+          <Comment key={comment.id} data={comment} />
+
+          <div>
+            <Typography variant='headline' style={style.fontStyle}>
+              Something went wrong... refresh the page
+            </Typography>
+          </div>
+        </div>
+      );
+    } else if (comment.loading) {
+      return (
+        <LoadingCard
+          key={comment.id}
+          content='Loading comment...'
+          backgroundColor="#FFFFFF"
+          cardStyle={style.card} />
+      );
+    } else {
+      return (
+        <Comment key={comment.id} data={comment} />
+      );
+    }
+  };
+
   render () {
 
-    const { postDetailsState, commentsState, commentCreateState } = this.props;
-    const { post, loading } = postDetailsState;
+    const { postDetailsState, commentsState, commentCreate } = this.props;
 
-    const newComment = !_.isEmpty(commentCreateState.comment) ? <CreateComment /> : null;
-
-    let content = <CircularProgress />;
-
-    const message = commentsState.comments.length === 0 ?
+    const message = commentsState.success && commentsState.comments.length === 0 ?
       <Typography variant='headline' align='center' color='textSecondary' style={style.message}>
         {randomCommentsMessages(Math.floor((Math.random() * 6) + 1))}
       </Typography> : null;
+
+    const addNewComment = (
+      <Collapse in={true} collapsedHeight="40px">
+        <Paper style={style.card}>
+          <Button onClick={() => this.props.addNewComment(postDetailsState.post.id)}>
+            Create comment
+          </Button>
+        </Paper>
+      </Collapse>
+    );
+
+    const newComment = !_.isEmpty(commentCreate) ?
+      <CreateComment /> : commentsState.success && addNewComment;
 
     const comments = (
       <div>
@@ -79,11 +155,12 @@ export class PostDetails extends Component {
         </Typography>
         {commentsState.comments
           .filter(comment => comment.deleted !== true)
-          .map(comment =>
-            <Comment key={comment.id} data={comment} isLoading={loading} />
-          )}
+          .map(comment => this.handleCommentState(comment))
+        }
       </div>
     );
+
+    let content = null;
 
     if (postDetailsState.failed) {
       content = (
@@ -91,28 +168,24 @@ export class PostDetails extends Component {
           Failed to load post
         </Typography>
       );
-    } else if (postDetailsState.success) {
+    } else if (postDetailsState.loading) {
       content = (
-        post.deleted ?
+        <CircularProgress style={style.commentsTitle} />
+      );
+    }
+    else if (postDetailsState.success) {
+      content = (
+        postDetailsState.post.deleted ?
           <Typography variant='body2' style={style.commentsTitle}>
             Post deleted
           </Typography>
           :
           <div>
-            <Post key={post.id} data={post} isLoading={loading} isDetails={true} />
+            {this.handlePostState(postDetailsState.post)}
             <Divider inset style={{ margin: "2% 0% 0% 0%" }} />
             {message}
             {comments}
             {newComment}
-            {newComment === null &&
-            <Collapse in={true} collapsedHeight="40px">
-              <Paper style={style.card}>
-                <Button onClick={() => this.props.addNewComment(post.id)}>
-                  Create comment
-                </Button>
-              </Paper>
-            </Collapse>
-            }
           </div>
       );
     }
@@ -125,7 +198,7 @@ const mapStateToProps = state => {
   return {
     postDetailsState: state.postDetails,
     commentsState: state.comments,
-    commentCreateState: state.commentCreate
+    commentCreate: state.commentCreate.comment
   };
 };
 

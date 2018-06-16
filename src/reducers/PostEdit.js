@@ -9,11 +9,9 @@ const initialPostEditState = {
 };
 
 const postEdit = (state = initialPostEditState, action) => {
-
   const { post } = action;
 
   switch (action.type) {
-
     //region pending actions
 
     case PostsActions.EDIT_POST:
@@ -41,8 +39,7 @@ const postEdit = (state = initialPostEditState, action) => {
 
     case PostsActions.CANCEL_EDIT_POST:
       return {
-        ...state,
-        post: {}
+        ...initialPostEditState
       };
 
     //endregion
@@ -60,7 +57,6 @@ const postEdit = (state = initialPostEditState, action) => {
     default:
       return initialPostEditState;
   }
-
 };
 
 export default postEdit;

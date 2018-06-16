@@ -9,11 +9,9 @@ const initialPostDetailsState = {
 };
 
 const postDetails = (state = initialPostDetailsState, action) => {
-
   const { payload } = action;
 
   switch (action.type) {
-
     //region pending actions
 
     case PostsActions.FETCH_POST_DETAILS_PENDING:
@@ -27,6 +25,10 @@ const postDetails = (state = initialPostDetailsState, action) => {
     case PostsActions.VOTE_ON_POST_PENDING:
       return {
         ...state,
+        post: {
+          ...state.post,
+          loading: true
+        },
         ...StoreUtils.loadingState()
       };
 
@@ -53,6 +55,10 @@ const postDetails = (state = initialPostDetailsState, action) => {
     case PostsActions.FETCH_POST_DETAILS_REJECTED:
       return {
         ...state,
+        post: {
+          ...state.post,
+          failed: true
+        },
         ...StoreUtils.failedState()
       };
 

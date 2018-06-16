@@ -13,7 +13,9 @@ import { connect } from "react-redux";
 import { cancelAddNewPost, createPost } from "../../../actions/PostsActions";
 import { categoryLogo } from "../../../utils/AppUtils";
 import AvatarCard from "../../Card/AvatarCard";
+import LoadingCard from "../../Card/LoadingCard";
 import Confirm from "../../Complementary/Confirm";
+import FailedAction from "../../Complementary/FailedAction";
 
 const style = {
   card: {
@@ -28,7 +30,8 @@ export class CreatePost extends PureComponent {
     postTitle: null,
     postBody: null,
     postAuthor: null,
-    postCategory: null
+    postCategory: null,
+    showing: null
   };
 
   static getDerivedStateFromProps (props, state) {
@@ -45,7 +48,8 @@ export class CreatePost extends PureComponent {
         postTitle: "",
         postBody: "",
         postAuthor: "",
-        postCategory
+        postCategory,
+        showing: true
       };
     }
     return null;
@@ -59,8 +63,10 @@ export class CreatePost extends PureComponent {
 
   render () {
 
-    const { post } = this.props.postCreateState;
-    const { postTitle, postBody, postAuthor, postCategory } = this.state;
+    const { postCreateState } = this.props;
+    const { post, success, loading, failed } = postCreateState;
+
+    const { postTitle, postBody, postAuthor, postCategory, showing } = this.state;
 
     const actionHeader = (
       <FormControl style={{ margin: "12% 0% 0% 0%" }}>
@@ -86,61 +92,69 @@ export class CreatePost extends PureComponent {
       </FormControl>
     );
 
-    return (
+    const header = (
+      <CardHeader
+        avatar={
+          <AvatarCard voteScore={0} opacity={0.3} />
+        }
+        subheader={
+          <Grid container spacing={8}>
+            <Grid item xs={12} sm={12} style={{ display: "flex" }}>
+              <Typography variant='body2' style={{ margin: "5% 3% 0% 0%" }}>
+                {`posted by `}
+              </Typography>
+              <TextField
+                id="author"
+                label="Author"
+                value={postAuthor}
+                onChange={this.handleChange("postAuthor")}
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        }
+        title={
+          <Grid container spacing={8}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                id="title"
+                label="Title"
+                value={postTitle}
+                onChange={this.handleChange("postTitle")}
+                margin="normal"
+                fullWidth
+                multiline
+              />
+            </Grid>
+          </Grid>
+        }
+        action={
+          actionHeader
+        }
+      />
+    );
+
+    const body = (
+      <CardContent>
+        <TextField
+          id="body"
+          label="Body"
+          value={postBody}
+          onChange={this.handleChange("postBody")}
+          margin="normal"
+          fullWidth
+          multiline
+        />
+      </CardContent>
+    );
+
+    const createPost = (
       <Card
         raised={true}
         style={{ ...style.card, backgroundColor: "#f8fdf6" }}>
-        <CardHeader
-          avatar={
-            <AvatarCard voteScore={0} opacity={0.3} />
-          }
-          subheader={
-            <Grid container spacing={8}>
-              <Grid item xs={12} sm={12} style={{ display: "flex" }}>
-                <Typography variant='body2' style={{ margin: "5% 3% 0% 0%" }}>
-                  {`posted by `}
-                </Typography>
-                <TextField
-                  id="author"
-                  label="Author"
-                  value={postAuthor}
-                  onChange={this.handleChange("postAuthor")}
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          }
-          title={
-            <Grid container spacing={8}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  id="title"
-                  label="Title"
-                  value={postTitle}
-                  onChange={this.handleChange("postTitle")}
-                  margin="normal"
-                  fullWidth
-                  multiline
-                />
-              </Grid>
-            </Grid>
-          }
-          action={
-            actionHeader
-          }
-        />
 
-        <CardContent>
-          <TextField
-            id="body"
-            label="Body"
-            value={postBody}
-            onChange={this.handleChange("postBody")}
-            margin="normal"
-            fullWidth
-            multiline
-          />
-        </CardContent>
+        {header}
+        {body}
 
         <Confirm
           firstButtonText='Cancel'
@@ -151,6 +165,35 @@ export class CreatePost extends PureComponent {
 
       </Card>
     );
+
+    let content = null;
+
+    if (failed) {
+      content = (
+        <div style={{ display: "flex" }}>
+          {createPost}
+          <FailedAction
+            isShowing={showing}
+            message="Couldn't create the post"
+            dismissCallback={() => {
+              this.setState({ showing: false });
+              this.props.cancelAddNewPost();
+            }}
+            retryCallback={() => this.props.createPost(post.id, postTitle, postBody, postAuthor, postCategory)} />
+        </div>
+      );
+    } else if (loading) {
+      content = (
+        <LoadingCard content='Creating post ...' backgroundColor="#f8fdf6"
+                     cardStyle={style.card} />
+      );
+    } else if (success) {
+      content = createPost;
+    } else {
+      content = createPost;
+    }
+
+    return content;
   }
 }
 

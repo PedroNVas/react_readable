@@ -16,13 +16,12 @@ export class AllPosts extends Component {
 
   render () {
 
-    const { postsState, postCreateState } = this.props;
+    const { postsState, postCreate } = this.props;
 
     return (
       <Posts
-        posts={postsState.posts}
         postsState={postsState}
-        postCreateState={postCreateState}
+        postCreate={postCreate}
         addPost={() => this.props.addNewPost()} />
     );
   }
@@ -31,7 +30,7 @@ export class AllPosts extends Component {
 const mapStateToProps = state => {
   return {
     postsState: state.posts,
-    postCreateState: state.postCreate
+    postCreate: state.postCreate.post
   };
 };
 

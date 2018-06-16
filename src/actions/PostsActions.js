@@ -1,5 +1,5 @@
 import * as API from "../api/API";
-import payloadAction from "../utils/ActionsUtils";
+import payloadAction, { additionalPayloadAction } from "../utils/ActionsUtils";
 import { uuid } from "../utils/AppUtils";
 import { fetchPostComments } from "./CommentsActions";
 
@@ -24,7 +24,9 @@ export const FETCH_CATEGORY_POST_FULFILLED = "FETCH_CATEGORY_POST_FULFILLED";
 export const FETCH_CATEGORY_POST_REJECTED = "FETCH_CATEGORY_POST_REJECTED";
 
 export const fetchCategoryPosts = category => {
-  return payloadAction(FETCH_CATEGORY_POST, () => API.fetchCategoryPosts(category));
+  return payloadAction(FETCH_CATEGORY_POST, () =>
+    API.fetchCategoryPosts(category)
+  );
 };
 
 //endregion
@@ -37,13 +39,14 @@ export const FETCH_POST_DETAILS_FULFILLED = "FETCH_POST_DETAILS_FULFILLED";
 export const FETCH_POST_DETAILS_REJECTED = "FETCH_POST_DETAILS_REJECTED";
 
 export const fetchPostDetails = postID => dispatch => {
-  const result = dispatch(payloadAction(FETCH_POST_DETAILS, () => API.fetchPostDetails(postID)));
+  const result = dispatch(
+    payloadAction(FETCH_POST_DETAILS, () => API.fetchPostDetails(postID))
+  );
 
-  return result
-    .then(response => {
-      const { id } = response.action.payload.data;
-      dispatch(fetchPostComments(id));
-    });
+  return result.then(response => {
+    const { id } = response.action.payload.data;
+    dispatch(fetchPostComments(id));
+  });
 };
 
 //endregion
@@ -56,7 +59,11 @@ export const VOTE_ON_POST_FULFILLED = "VOTE_ON_POST_FULFILLED";
 export const VOTE_ON_POST_REJECTED = "VOTE_ON_POST_REJECTED";
 
 export const voteOnPost = (postId, voteType) => {
-  return payloadAction(VOTE_ON_POST, () => API.voteOnPost(postId, voteType));
+  return additionalPayloadAction(
+    VOTE_ON_POST,
+    () => API.voteOnPost(postId, voteType),
+    { postId }
+  );
 };
 
 //endregion
@@ -69,7 +76,9 @@ export const DELETE_POST_FULFILLED = "DELETE_POST_FULFILLED";
 export const DELETE_POST_REJECTED = "DELETE_POST_REJECTED";
 
 export const deletePost = postId => {
-  return payloadAction(DELETE_POST, () => API.deletePost(postId));
+  return additionalPayloadAction(DELETE_POST, () => API.deletePost(postId), {
+    postId
+  });
 };
 
 //endregion
@@ -113,7 +122,9 @@ export const UPDATE_POST_FULFILLED = "UPDATE_POST_FULFILLED";
 export const UPDATE_POST_REJECTED = "UPDATE_POST_REJECTED";
 
 export const updatePost = (postId, postTitle, postBody) => {
-  return payloadAction(UPDATE_POST, () => API.updatePost(postId, postTitle, postBody));
+  return payloadAction(UPDATE_POST, () =>
+    API.updatePost(postId, postTitle, postBody)
+  );
 };
 
 //endregion
@@ -154,8 +165,16 @@ export const CREATE_POST_PENDING = "CREATE_POST_PENDING";
 export const CREATE_POST_FULFILLED = "CREATE_POST_FULFILLED";
 export const CREATE_POST_REJECTED = "CREATE_POST_REJECTED";
 
-export const createPost = (postId, postTitle, postBody, postAuthor, postCategory) => {
-  return payloadAction(CREATE_POST, () => API.createPost(postId, postTitle, postBody, postAuthor, postCategory));
+export const createPost = (
+  postId,
+  postTitle,
+  postBody,
+  postAuthor,
+  postCategory
+) => {
+  return payloadAction(CREATE_POST, () =>
+    API.createPost(postId, postTitle, postBody, postAuthor, postCategory)
+  );
 };
 
 //endregion

@@ -8,7 +8,9 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { cancelAddNewComment, createComment } from "../../../actions/CommentsActions";
 import AvatarCard from "../../Card/AvatarCard";
+import LoadingCard from "../../Card/LoadingCard";
 import Confirm from "../../Complementary/Confirm";
+import FailedAction from "../../Complementary/FailedAction";
 
 const style = {
   card: {
@@ -21,16 +23,19 @@ export class CreateComment extends PureComponent {
 
   state = {
     commentAuthor: null,
-    commentBody: null
+    commentBody: null,
+    showing: null
   };
 
   static getDerivedStateFromProps (props, state) {
     if (state.commentAuthor === null) {
       return {
         commentAuthor: "",
-        commentBody: ""
+        commentBody: "",
+        showing: true
       };
     }
+
     return null;
   }
 
@@ -42,46 +47,60 @@ export class CreateComment extends PureComponent {
 
   render () {
 
-    const { comment } = this.props.commentCreateState;
-    const { commentAuthor, commentBody } = this.state;
+    const { commentCreateState } = this.props;
 
-    return (
+    const { comment, success, loading, failed } = commentCreateState;
+
+    const { commentAuthor, commentBody, showing } = this.state;
+
+    let content = null;
+
+    const header = (
+      <CardHeader
+        avatar={
+          <AvatarCard voteScore={0} opacity={0.3} />
+        }
+        subheader={
+          <Grid container spacing={8}>
+            <Grid item xs={12} sm={12} style={{ display: "flex" }}>
+              <Typography variant='body2' style={{ margin: "7% 3% 0% 0%" }}>
+                {`posted by `}
+              </Typography>
+              <TextField
+                id="author"
+                label="Author"
+                value={commentAuthor}
+                onChange={this.handleChange("commentAuthor")}
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        }
+      />
+    );
+
+    const body = (
+      <CardContent>
+        <TextField
+          id="body"
+          label="Body"
+          value={commentBody}
+          onChange={this.handleChange("commentBody")}
+          margin="normal"
+          fullWidth
+          multiline
+        />
+      </CardContent>
+    );
+
+    const createComment = (
       <Card
         raised={true}
         style={{ ...style.card, backgroundColor: "#f8fdf6" }}>
-        <CardHeader
-          avatar={
-            <AvatarCard voteScore={0} opacity={0.3} />
-          }
-          subheader={
-            <Grid container spacing={8}>
-              <Grid item xs={12} sm={12} style={{ display: "flex" }}>
-                <Typography variant='body2' style={{ margin: "7% 3% 0% 0%" }}>
-                  {`posted by `}
-                </Typography>
-                <TextField
-                  id="author"
-                  label="Author"
-                  value={commentAuthor}
-                  onChange={this.handleChange("commentAuthor")}
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          }
-        />
 
-        <CardContent>
-          <TextField
-            id="body"
-            label="Body"
-            value={commentBody}
-            onChange={this.handleChange("commentBody")}
-            margin="normal"
-            fullWidth
-            multiline
-          />
-        </CardContent>
+        {header}
+
+        {body}
 
         <Confirm
           firstButtonText='Cancel'
@@ -92,6 +111,33 @@ export class CreateComment extends PureComponent {
 
       </Card>
     );
+
+    if (failed) {
+      content = (
+        <div style={{ display: "flex" }}>
+          {createComment}
+          <FailedAction
+            isShowing={showing}
+            message="Couldn't create the comment"
+            dismissCallback={() => {
+              this.setState({ showing: false });
+              this.props.cancelAddNewComment();
+            }}
+            retryCallback={() => this.props.createComment(comment.id, commentBody, commentAuthor, comment.parentId)} />
+        </div>
+      );
+    } else if (loading) {
+      content = (
+        <LoadingCard content='Creating comment...' backgroundColor="#f8fdf6"
+                     cardStyle={style.card} />
+      );
+    } else if (success) {
+      content = createComment;
+    } else {
+      content = createComment;
+    }
+
+    return content;
   }
 }
 

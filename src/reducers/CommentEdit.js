@@ -9,11 +9,9 @@ const initialCommentEditState = {
 };
 
 const commentEdit = (state = initialCommentEditState, action) => {
-
   const { payload } = action;
 
   switch (action.type) {
-
     //region pending actions
 
     case CommentsActions.FETCH_COMMENT_DETAILS_PENDING:
@@ -42,8 +40,7 @@ const commentEdit = (state = initialCommentEditState, action) => {
 
     case CommentsActions.CANCEL_EDIT_COMMENT:
       return {
-        ...state,
-        comment: {}
+        ...initialCommentEditState
       };
 
     case CommentsActions.UPDATE_COMMENT_FULFILLED:
@@ -69,7 +66,6 @@ const commentEdit = (state = initialCommentEditState, action) => {
     default:
       return initialCommentEditState;
   }
-
 };
 
 export default commentEdit;

@@ -9,11 +9,9 @@ const initialPostCreateState = {
 };
 
 const postCreate = (state = initialPostCreateState, action) => {
-
   const { post } = action;
 
   switch (action.type) {
-
     //region pending actions
 
     case PostsActions.ADD_NEW_POST:
@@ -28,7 +26,6 @@ const postCreate = (state = initialPostCreateState, action) => {
         ...StoreUtils.loadingState()
       };
 
-
     //endregion
 
     //region fulfilled actions
@@ -42,8 +39,7 @@ const postCreate = (state = initialPostCreateState, action) => {
 
     case PostsActions.CANCEL_ADD_NEW_POST:
       return {
-        ...state,
-        post: {}
+        ...initialPostCreateState
       };
 
     //endregion

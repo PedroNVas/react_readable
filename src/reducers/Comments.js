@@ -5,43 +5,65 @@ const initialCommentsState = {
   comments: [],
   success: false,
   loading: false,
-  failed: false,
-  failReason: ""
+  failed: false
 };
 
 const comments = (state = initialCommentsState, action) => {
-
-  const { comments, loading, success, failed, failReason, payload } = action;
+  const { payload } = action;
 
   switch (action.type) {
-
-
     //region pending actions
 
-    case CommentsActions.DELETE_COMMENT_PENDING:
-    case CommentsActions.VOTE_ON_COMMENT_PENDING:
+    case CommentsActions.GET_POST_COMMENTS_PENDING:
       return {
         ...state,
+        comments: [],
         ...StoreUtils.loadingState()
       };
 
+    case CommentsActions.DELETE_COMMENT_PENDING:
+    case CommentsActions.VOTE_ON_COMMENT_PENDING: {
+      const { commentId } = action.meta;
+
+      return {
+        ...state,
+        comments: state.comments.map(
+          oldComment =>
+            oldComment.id === commentId
+              ? { ...oldComment, loading: true }
+              : oldComment
+        ),
+        ...StoreUtils.loadingState()
+      };
+    }
     //endregion
 
     //region fulfilled actions
+
+    case CommentsActions.GET_POST_COMMENTS_FULFILLED:
+      return {
+        ...state,
+        comments: payload.data,
+        ...StoreUtils.successState()
+      };
 
     case CommentsActions.UPDATE_COMMENT_FULFILLED:
     case CommentsActions.VOTE_ON_COMMENT_FULFILLED:
       return {
         ...state,
-        comments: state.comments.map(oldComment => oldComment.id === payload.data.id ? payload.data : oldComment),
+        comments: state.comments.map(
+          oldComment =>
+            oldComment.id === payload.data.id ? payload.data : oldComment
+        ),
         ...StoreUtils.successState()
       };
 
     case CommentsActions.DELETE_COMMENT_FULFILLED: {
-
       return {
         ...state,
-        comments: state.comments.filter(oldComment => oldComment.id !== payload.data.id),
+        comments: state.comments.filter(
+          oldComment => oldComment.id !== payload.data.id
+        ),
         ...StoreUtils.successState()
       };
     }
@@ -57,58 +79,33 @@ const comments = (state = initialCommentsState, action) => {
 
     //region rejected actions
 
-    case CommentsActions.DELETE_COMMENT_REJECTED:
-    case CommentsActions.VOTE_ON_COMMENT_REJECTED:
+    case CommentsActions.GET_POST_COMMENTS_REJECTED:
       return {
         ...state,
         ...StoreUtils.failedState()
       };
 
-    //endregion
+    case CommentsActions.DELETE_COMMENT_REJECTED:
+    case CommentsActions.VOTE_ON_COMMENT_REJECTED: {
+      const { commentId } = action.meta;
 
-    //region loading actions
-
-    case CommentsActions.GET_POST_COMMENTS:
       return {
         ...state,
-        success,
-        loading,
-        failed
+        comments: state.comments.map(
+          oldComment =>
+            oldComment.id === commentId
+              ? { ...oldComment, failed: true }
+              : oldComment
+        ),
+        ...StoreUtils.failedState()
       };
-
-    //endregion
-
-    //region failed actions
-
-    case CommentsActions.GET_POST_COMMENTS_FAILED:
-      return {
-        ...state,
-        success,
-        loading,
-        failed,
-        failReason
-      };
-
-    //endregion
-
-    //region success actions
-
-    case CommentsActions.GET_POST_COMMENTS_SUCCESS:
-      return {
-        ...state,
-        comments,
-        success,
-        loading,
-        failed
-      };
+    }
 
     //endregion
 
     default:
       return state;
   }
-
 };
 
 export default comments;
-

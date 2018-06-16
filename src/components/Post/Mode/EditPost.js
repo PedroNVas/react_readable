@@ -8,8 +8,10 @@ import { connect } from "react-redux";
 import { cancelEditPost, updatePost } from "../../../actions/PostsActions";
 import AvatarCard from "../../Card/AvatarCard";
 import HeaderCard from "../../Card/HeaderCard";
+import LoadingCard from "../../Card/LoadingCard";
 import SubHeaderCard from "../../Card/SubHeaderCard";
 import Confirm from "../../Complementary/Confirm";
+import FailedAction from "../../Complementary/FailedAction";
 
 const style = {
   card: {
@@ -22,7 +24,8 @@ export class EditPost extends PureComponent {
 
   state = {
     postTitle: null,
-    postBody: null
+    postBody: null,
+    showing: null
   };
 
   static getDerivedStateFromProps (props, state) {
@@ -30,7 +33,8 @@ export class EditPost extends PureComponent {
     if (state.postBody === null || state.postTitle === null) {
       return {
         postTitle: post.title,
-        postBody: post.body
+        postBody: post.body,
+        showing: true
       };
     }
     return null;
@@ -44,9 +48,10 @@ export class EditPost extends PureComponent {
 
   render () {
 
-    const { post } = this.props.postEditState;
+    const { postEditState } = this.props;
+    const { post, success, loading, failed } = postEditState;
 
-    const { postBody, postTitle } = this.state;
+    const { postBody, postTitle, showing } = this.state;
 
     const headerTitle = (
       <TextField
@@ -64,13 +69,16 @@ export class EditPost extends PureComponent {
         avatar={
           <AvatarCard opacity={0.3} voteScore={post.voteScore} />
         }
-        title={headerTitle}
+        title={
+          headerTitle
+        }
         subHeader={
           <SubHeaderCard author={post.author} timestamp={post.timestamp} opacity={0.3} />
-        } />
+        }
+      />
     );
 
-    const content = (
+    const body = (
       <CardContent>
         <Grid container spacing={24} justify='center'>
           <Grid item xs={12} sm={12}>
@@ -93,15 +101,13 @@ export class EditPost extends PureComponent {
       </CardContent>
     );
 
-    return (
+    const editPost = (
       <Card raised={true}
-            onMouseEnter={this.raiseCard}
-            onMouseLeave={this.unRaiseCard}
             style={{ ...style.card, backgroundColor: "#fdfaf4" }}>
 
         {header}
 
-        {content}
+        {body}
 
         <Confirm
           firstButtonText='Cancel'
@@ -111,6 +117,35 @@ export class EditPost extends PureComponent {
 
       </Card>
     );
+
+    let content = null;
+
+    if (failed) {
+      content = (
+        <div style={{ display: "flex" }}>
+          {editPost}
+          <FailedAction
+            isShowing={showing}
+            message="Couldn't edit the post"
+            dismissCallback={() => {
+              this.setState({ showing: false });
+              this.props.cancelEditPost();
+            }}
+            retryCallback={() => this.props.updatePost(post.id, postTitle, postBody)} />
+        </div>
+      );
+    } else if (loading) {
+      content = (
+        <LoadingCard content='Editing post...' backgroundColor="#fdfaf4"
+                     cardStyle={style.card} />
+      );
+    } else if (success) {
+      content = editPost;
+    } else {
+      content = editPost;
+    }
+
+    return content;
   }
 }
 

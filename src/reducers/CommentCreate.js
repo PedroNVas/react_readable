@@ -9,23 +9,10 @@ const initialCommentCreateState = {
 };
 
 const commentCreate = (state = initialCommentCreateState, action) => {
-
   const { comment } = action;
 
   switch (action.type) {
-
     //region pending actions
-
-    case CommentsActions.CREATE_COMMENT_PENDING:
-      return {
-        ...state,
-        ...StoreUtils.loadingState()
-
-      };
-
-    //endregion
-
-    //region fulfilled actions
 
     case CommentsActions.ADD_NEW_COMMENT:
       return {
@@ -33,10 +20,19 @@ const commentCreate = (state = initialCommentCreateState, action) => {
         comment
       };
 
-    case CommentsActions.CANCEL_ADD_NEW_COMMENT:
+    case CommentsActions.CREATE_COMMENT_PENDING:
       return {
         ...state,
-        comment: {}
+        ...StoreUtils.loadingState()
+      };
+
+    //endregion
+
+    //region fulfilled actions
+
+    case CommentsActions.CANCEL_ADD_NEW_COMMENT:
+      return {
+        ...initialCommentCreateState
       };
 
     case CommentsActions.CREATE_COMMENT_FULFILLED:

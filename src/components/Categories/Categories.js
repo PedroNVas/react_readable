@@ -42,18 +42,6 @@ const style = {
   button: {
     display: "inline-grid",
     margin: "0% 5% 0% 5%"
-  },
-  input: {
-    width: "80%",
-    padding: "15px",
-    margin: "0% 10% 2% 10%",
-    display: "inline-block",
-    border: "2px solid #ccc",
-    borderRadius: "5px",
-    boxSizing: "border-box",
-    fontSize: "20px",
-    fontFamily: "'Raleway', regular",
-    outline: "none"
   }
 };
 
@@ -66,16 +54,10 @@ export class Categories extends PureComponent {
   state = {
     selectedCategory: "all",
     fadeOpen: false,
-    query: ""
   };
 
   handleSwitch = () => {
     this.setState({ fadeOpen: !this.state.fadeOpen });
-  };
-
-  handleInputChange = (e) => {
-    const { value } = e.target;
-    this.setState({ query: value });
   };
 
   componentDidMount () {
@@ -87,7 +69,7 @@ export class Categories extends PureComponent {
     const { categoriesState } = this.props;
     const { categories, success, loading, failed } = categoriesState;
 
-    const { selectedCategory, fadeOpen, query } = this.state;
+    const { selectedCategory, fadeOpen, } = this.state;
 
     const appTitle = (
       <Grid item xs={12} sm={2}>
@@ -100,6 +82,7 @@ export class Categories extends PureComponent {
     let content = null;
 
     if (failed) {
+
       content = (
         <Grid container spacing={24} justify='center'>
           {appTitle}
@@ -114,7 +97,9 @@ export class Categories extends PureComponent {
           </Grid>
         </Grid>
       );
+
     } else if (loading) {
+
       content = (
         <Grid container spacing={24} justify='center'>
           {appTitle}
@@ -126,6 +111,7 @@ export class Categories extends PureComponent {
           </Grid>
         </Grid>
       );
+
     } else if (success) {
 
       content = (
@@ -179,15 +165,7 @@ export class Categories extends PureComponent {
             <Grid item xs={12} sm={2}>
               <Sort opened={fadeOpen} />
             </Grid>
-            <Grid item xs={12} sm={8} style={{ textAlign: "center" }}>
-              <input
-                type='text'
-                placeholder='Search by author, post and comment key words'
-                value={query}
-                onChange={this.handleInputChange}
-                style={style.input}
-              />
-            </Grid>
+            <Grid item xs={12} sm={8} />
             <Grid item xs={12} sm={2}>
               <FormGroup>
                 <FormControlLabel

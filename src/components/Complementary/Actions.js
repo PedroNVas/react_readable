@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
-import { favoritePost, unFavoritePost } from "../../actions/PostsActions";
 import DeleteConfirmation from "./DeleteConfirmation";
 import IconAction from "./IconAction";
 

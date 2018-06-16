@@ -25,22 +25,3 @@ export const failedState = () => {
 };
 
 //endregion
-
-//region action creator helper
-
-export const loadingAction = (type) => {
-  return {
-    type,
-    ...loadingState()
-  };
-};
-
-export const failedAction = (type, failedReason) => {
-  return {
-    type,
-    failedReason,
-    ...failedState()
-  };
-};
-
-//endregion

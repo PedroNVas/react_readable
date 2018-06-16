@@ -9,17 +9,16 @@ class Post extends PureComponent {
 
   static propTypes = {
     data: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired,
     isDetails: PropTypes.bool.isRequired
   };
 
   render () {
 
-    const { data, isLoading, isDetails, postEditState } = this.props;
+    const { data, isDetails, postEdit } = this.props;
 
     let postContent = null;
 
-    if (!_.isEmpty(postEditState.post) && postEditState.post.id === data.id) {
+    if (!_.isEmpty(postEdit) && postEdit.id === data.id) {
       postContent = <EditPost />;
     } else {
       postContent = <DisplayPost data={data} isDetails={isDetails} />;
@@ -31,7 +30,7 @@ class Post extends PureComponent {
 
 const mapStateToProps = state => {
   return {
-    postEditState: state.postEdit
+    postEdit: state.postEdit.post
   };
 };
 

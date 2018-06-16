@@ -21,7 +21,10 @@
     "underscore": "^1.9.0"
   },
   "devDependencies": {
-    "prettier": "^1.13.3"
+    "prettier": "^1.13.3",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-airbnb": "^16.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

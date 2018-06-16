@@ -5,4 +5,18 @@ const payloadAction = (type, apiCallback) => {
   };
 };
 
+export const additionalPayloadAction = (
+  type,
+  apiCallback,
+  additionalObject
+) => {
+  return {
+    type,
+    payload: apiCallback(),
+    meta: {
+      ...additionalObject
+    }
+  };
+};
+
 export default payloadAction;

@@ -6,8 +6,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { cancelEditComment, updateComment } from "../../../actions/CommentsActions";
 import AvatarCard from "../../Card/AvatarCard";
+import LoadingCard from "../../Card/LoadingCard";
 import SubHeaderCard from "../../Card/SubHeaderCard";
 import Confirm from "../../Complementary/Confirm";
+import FailedAction from "../../Complementary/FailedAction";
 
 const style = {
   card: {
@@ -19,14 +21,16 @@ const style = {
 export class EditComment extends Component {
 
   state = {
-    commentBody: null
+    commentBody: null,
+    showing: null
   };
 
   static getDerivedStateFromProps (props, state) {
     const { comment } = props.commentEditState;
     if (state.commentBody === null) {
       return {
-        commentBody: comment.body
+        commentBody: comment.body,
+        showing: true
       };
     }
     return null;
@@ -40,32 +44,43 @@ export class EditComment extends Component {
 
   render () {
 
-    const { comment } = this.props.commentEditState;
-    const { commentBody } = this.state;
+    const { commentEditState } = this.props;
+    const { comment, success, loading, failed } = commentEditState;
 
-    return (
+    const { commentBody, showing } = this.state;
+
+    const header = (
+      <CardHeader
+        avatar={
+          <AvatarCard voteScore={comment.voteScore} opacity={0.3} />
+        }
+        subheader={
+          <SubHeaderCard author={comment.author} timestamp={comment.timestamp} opacity={0.3} />
+        }
+      />
+    );
+
+    const body = (
+      <CardContent>
+        <TextField
+          id="body"
+          label="Edit body"
+          value={commentBody}
+          onChange={this.handleChange("commentBody")}
+          margin="normal"
+          fullWidth
+          multiline
+        />
+      </CardContent>
+    );
+
+    const editComment = (
       <Card raised={true}
             style={{ ...style.card, backgroundColor: "#fdfaf4" }}>
-        <CardHeader
-          avatar={
-            <AvatarCard voteScore={comment.voteScore} opacity={0.3} />
-          }
-          subheader={
-            <SubHeaderCard author={comment.author} timestamp={comment.timestamp} opacity={0.3} />
-          }
-        />
 
-        <CardContent>
-          <TextField
-            id="body"
-            label="Edit body"
-            value={commentBody}
-            onChange={this.handleChange("commentBody")}
-            margin="normal"
-            fullWidth
-            multiline
-          />
-        </CardContent>
+        {header}
+
+        {body}
 
         <Confirm
           firstButtonText='Cancel'
@@ -75,6 +90,35 @@ export class EditComment extends Component {
 
       </Card>
     );
+
+    let content = null;
+
+    if (failed) {
+      content = (
+        <div style={{ display: "flex" }}>
+          {editComment}
+          <FailedAction
+            isShowing={showing}
+            message="Couldn't edit the comment"
+            dismissCallback={() => {
+              this.setState({ showing: false });
+              this.props.cancelEditComment();
+            }}
+            retryCallback={() => this.props.updateComment(comment.id, commentBody)} />
+        </div>
+      );
+    } else if (loading) {
+      content = (
+        <LoadingCard content='Editing post...' backgroundColor="#fdfaf4"
+                     cardStyle={style.card} />
+      );
+    } else if (success) {
+      content = editComment;
+    } else {
+      content = editComment;
+    }
+
+    return content;
   }
 }
 

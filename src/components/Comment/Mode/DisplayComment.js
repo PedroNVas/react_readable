@@ -29,8 +29,7 @@ const style = {
 export class DisplayComment extends Component {
 
   static propTypes = {
-    data: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    data: PropTypes.object.isRequired
   };
 
   state = {
@@ -57,15 +56,37 @@ export class DisplayComment extends Component {
 
   render () {
 
-    const { data, isLoading } = this.props;
+    const { data } = this.props;
     const { raised, showVoting, showActions } = this.state;
 
     const headerAction = (
-      <Tooltip title={!showActions ? "Show actions" : "Hide actions"} placement='top'>
+      <Tooltip title={!showActions ? "Show actions" : "Hide actions"} placement='top'
+               enterDelay={100}
+               leaveDelay={250}>
         <IconButton onClick={this.showActions}>
           {showActions ? <ChevronLeft /> : <ChevronRight />}
         </IconButton>
       </Tooltip>
+    );
+
+    const header = (
+      <CardHeader
+        avatar={
+          <AvatarCard voteScore={data.voteScore} opacity={1} />
+        }
+        action={headerAction}
+        subheader={
+          <SubHeaderCard author={data.author} timestamp={data.timestamp} opacity={1} />
+        }
+      />
+    );
+
+    const body = (
+      <CardContent>
+        <Typography component="p">
+          {data.body}
+        </Typography>
+      </CardContent>
     );
 
     return (
@@ -75,21 +96,9 @@ export class DisplayComment extends Component {
               onMouseLeave={this.unRaiseCard}
               style={{ ...style.card, backgroundColor: raised ? "#f7f7f7" : "#FFFFFF" }}>
 
-          <CardHeader
-            avatar={
-              <AvatarCard voteScore={data.voteScore} opacity={1} />
-            }
-            action={headerAction}
-            subheader={
-              <SubHeaderCard author={data.author} timestamp={data.timestamp} opacity={1} />
-            }
-          />
+          {header}
 
-          <CardContent>
-            <Typography component="p">
-              {data.body}
-            </Typography>
-          </CardContent>
+          {body}
 
           <Vote
             type='comment'

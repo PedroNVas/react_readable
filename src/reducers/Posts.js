@@ -10,11 +10,9 @@ const initialPostsState = {
 };
 
 const posts = (state = initialPostsState, action) => {
-
   const { payload } = action;
 
   switch (action.type) {
-
     //region pending actions
 
     case PostsActions.FETCH_POSTS_PENDING:
@@ -25,11 +23,18 @@ const posts = (state = initialPostsState, action) => {
       };
 
     case PostsActions.DELETE_POST_PENDING:
-    case PostsActions.VOTE_ON_POST_PENDING:
+    case PostsActions.VOTE_ON_POST_PENDING: {
+      const { postId } = action.meta;
+
       return {
         ...state,
+        posts: state.posts.map(
+          oldPost =>
+            oldPost.id === postId ? { ...oldPost, loading: true } : oldPost
+        ),
         ...StoreUtils.loadingState()
       };
+    }
 
     //endregion
 
@@ -47,7 +52,9 @@ const posts = (state = initialPostsState, action) => {
     case PostsActions.VOTE_ON_POST_FULFILLED:
       return {
         ...state,
-        posts: state.posts.map(oldPost => oldPost.id === payload.data.id ? payload.data : oldPost),
+        posts: state.posts.map(
+          oldPost => (oldPost.id === payload.data.id ? payload.data : oldPost)
+        ),
         ...StoreUtils.successState()
       };
 
@@ -73,19 +80,29 @@ const posts = (state = initialPostsState, action) => {
 
     //region rejected actions
 
-    case PostsActions.DELETE_POST_REJECTED:
-    case PostsActions.VOTE_ON_POST_REJECTED:
     case PostsActions.FETCH_POSTS_REJECTED:
       return {
         ...state,
         ...StoreUtils.failedState()
       };
 
+    case PostsActions.DELETE_POST_REJECTED:
+    case PostsActions.VOTE_ON_POST_REJECTED: {
+      const { postId } = action.meta;
+
+      return {
+        ...state,
+        posts: state.posts.map(
+          oldPost =>
+            oldPost.id === postId ? { ...oldPost, failed: true } : oldPost
+        ),
+        ...StoreUtils.failedState()
+      };
+    }
     //endregion
 
     default:
       return state;
-
   }
 };
 
