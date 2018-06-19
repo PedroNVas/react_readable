@@ -1,3 +1,4 @@
+import * as CommentsActions from "../actions/CommentsActions";
 import * as PostsActions from "../actions/PostsActions";
 import * as StoreUtils from "../utils/StoreUtils";
 
@@ -35,6 +36,24 @@ const postDetails = (state = initialPostDetailsState, action) => {
     //endregion
 
     //region fulfilled actions
+
+    case CommentsActions.CREATE_COMMENT_FULFILLED:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          commentCount: state.post.commentCount + 1
+        }
+      };
+
+    case CommentsActions.DELETE_COMMENT_FULFILLED:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          commentCount: state.post.commentCount - 1
+        }
+      };
 
     case PostsActions.UPDATE_POST_FULFILLED:
     case PostsActions.DELETE_POST_FULFILLED:
