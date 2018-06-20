@@ -10,7 +10,7 @@ const instance = axios.create({
   baseURL: "http://localhost:3001",
   timeout: 100,
   headers: {
-    Authorization: "whatever",
+    Authorization: authenticationToken,
     Accept: "application/json"
   }
 });
