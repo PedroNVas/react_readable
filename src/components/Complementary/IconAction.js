@@ -1,5 +1,5 @@
-import IconButton from "@material-ui/core/es/IconButton/IconButton";
-import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
+import IconButton from "@material-ui/core/es/IconButton";
+import Tooltip from "@material-ui/core/es/Tooltip";
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
@@ -17,7 +17,7 @@ class IconAction extends PureComponent {
     isHovered: false
   };
 
-  render () {
+  render() {
 
     const { title, icon, hoverColor, regularColor, buttonCallback } = this.props;
     const { isHovered } = this.state;

@@ -14,6 +14,7 @@ import { randomCommentsMessages } from "../../utils/AppUtils";
 import LoadingCard from "../Card/LoadingCard";
 import Comment from "../Comment/Comment";
 import CreateComment from "../Comment/Mode/CreateComment";
+import NotFound from "../NotFound/NotFound";
 import Post from "../Post/Post";
 
 const style = {
@@ -49,7 +50,7 @@ export class PostDetails extends Component {
     urlPostId: null
   };
 
-  static getDerivedStateFromProps (props, state) {
+  static getDerivedStateFromProps(props, state) {
     const { postId } = props.match.params;
     if (postId !== state) {
       return {
@@ -59,7 +60,7 @@ export class PostDetails extends Component {
     return null;
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { postId } = this.props.match.params;
     this.props.fetchPostDetails(postId);
   }
@@ -126,7 +127,7 @@ export class PostDetails extends Component {
     }
   };
 
-  render () {
+  render() {
 
     const { postDetailsState, commentsState, commentCreate } = this.props;
 
@@ -161,6 +162,10 @@ export class PostDetails extends Component {
     );
 
     let content = null;
+
+    if (_.isEmpty(postDetailsState.post)) {
+      return <NotFound />;
+    }
 
     if (postDetailsState.failed) {
       content = (

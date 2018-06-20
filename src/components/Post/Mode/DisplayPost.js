@@ -53,7 +53,7 @@ export class DisplayPost extends Component {
     this.setState({ raised: false, showVoting: false });
   };
 
-  render () {
+  render() {
 
     const { data, isDetails } = this.props;
     const { showVoting, showActions, raised } = this.state;
@@ -159,7 +159,7 @@ const mapDispatchToProps = dispatch => {
   return {
     voteOnPost: (postId, voteType) => dispatch(voteOnPost(postId, voteType)),
     deletePost: postId => dispatch(deletePost(postId)),
-    editPost: post => dispatch(editPost(post)),
+    editPost: post => dispatch(editPost(post))
   };
 };
 
